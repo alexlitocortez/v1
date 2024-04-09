@@ -4,25 +4,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { OAuthConfig, OAuthUserConfig } from "next-auth/providers/oauth";
 
-// interface GoogleProfile extends Record<string, any> {
-//     email: string,
-//     email_verified: boolean
-// }
-
-// export default function Google<P extends GoogleProfile>(
-//     options: OAuthUserConfig<P>
-// ): OAuthConfig<P> {
-//     return {
-//         profile(profile) {
-//             return {
-//                 email: profile.email
-//             }
-//         }
-//     }
-// }
-
-
-
 export const authOptions = {
     providers: [
         GitHubProvider({
