@@ -15,14 +15,14 @@ export const authOptions = {
             clientSecret: process.env.GOOGLE_SECRET ?? ""
         })
     ],
-    callbacks: {
-        async signIn({ account, profile }) {
-            if (account.provider === "google") {
-                return profile.email_verified && profile.email.endsWith("@example.com")
-            }
-            return true
-        }
-    }
+    // callbacks: {
+    //     async signIn({ account, profile }) {
+    //         if (account.provider === "google") {
+    //             return profile.email_verified && profile.email.endsWith("@example.com")
+    //         }
+    //         return true
+    //     }
+    // }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
