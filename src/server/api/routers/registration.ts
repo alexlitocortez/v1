@@ -1,28 +1,40 @@
-import { z } from "zod";
+import { number, z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
-const RegistrationInput = z.object({
+export const RegistrationInput = z.object({
     email: z.string().email(),
-    password: z.string().min(6)
+    password: z.string()
 })
 
-// export const registrationRouter = createTRPCRouter({
-//     registerMessage: publicProcedure.mutation(async (opts) => {
-//         return {
-//             user: {
-//                 message: 'hi'
-//             }
-//         }
-//     })
-// })
+const database = {
+    posts: []
+}
 
-// export const exampleRouter = createTRPCRouter({
-//     hello: publicProcedure
-//         .input(z.object({ text: z.string() }))
-//         .query(({ input }) => {
-//             return {
-//                 greeting: `Hello ${input.text}`
-//             }
-//         })
-// })
+// procedure for handling user registration
 
+export const registrationRouter = createTRPCRouter({
+    // create: publicProcedure
+    //     .input(RegistrationInput)
+    //     .mutation(({ input }) => {
+    //         const newPost = {
+    //             id: database.posts.length + 1,
+    //             ...input 
+    //         };
+    //         return newPost
+    //     }),
+
+
+    // procedure for retrieving all the posts and return all posts from the database
+    // getAll: publicProcedure
+    //     .query(() => {
+    //         // Return all posts from the database
+    //         return database.posts
+    //     }),
+
+    // procedure for retrieving a post by ID
+    // getById: publicProcedure
+    //     .input(z.string())
+    //     .query(({ input }) => {
+    //         return database.posts.find(post => post.id === parseInt(input, 10));
+    //     })
+})

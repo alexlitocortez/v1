@@ -1,7 +1,7 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { loggerLink, unstable_httpBatchStreamLink } from "@trpc/client";
+import { httpBatchLink, loggerLink, unstable_httpBatchStreamLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { useState } from "react";
 import SuperJSON from "superjson";
@@ -22,6 +22,12 @@ const getQueryClient = () => {
 
 export const api = createTRPCReact<AppRouter>();
 
+// export let token: string
+
+// export const setToken = (newToken: string) => {
+//   token = newToken
+// }
+
 export function TRPCReactProvider(props: { children: React.ReactNode }) {
   const queryClient = getQueryClient();
 
@@ -33,6 +39,15 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
             process.env.NODE_ENV === "development" ||
             (op.direction === "down" && op.result instanceof Error),
         }),
+        // httpBatchLink({
+        //   url: `http://localhost:3000/api/trpc`,
+        //   headers() {
+        //     return {
+        //       Authorization: `Bearer ${token}`
+        //     }
+        //   },
+        //   transformer: SuperJSON
+        // }),
         unstable_httpBatchStreamLink({
           transformer: SuperJSON,
           url: getBaseUrl() + "/api/trpc",
