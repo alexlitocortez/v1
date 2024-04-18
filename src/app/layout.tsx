@@ -1,5 +1,5 @@
 import "~/styles/globals.css";
-import { cn } from "../../src/app/lib/utils"
+import { cn } from "../lib/utils"
 
 import { Inter } from "next/font/google";
 import { getServerSession } from "next-auth";

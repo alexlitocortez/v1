@@ -1,3 +1,4 @@
+import { PrismaClient } from "@prisma/client";
 import { number, z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
@@ -6,30 +7,37 @@ export const RegistrationInput = z.object({
     password: z.string()
 })
 
-const database = {
-    posts: []
-}
+export const User = z.object({
+    id: z.string(),
+    email: z.string(),
+    password: z.string()
+})
 
-// procedure for handling user registration
+const prisma = new PrismaClient()
 
 export const registrationRouter = createTRPCRouter({
-    // create: publicProcedure
-    //     .input(RegistrationInput)
-    //     .mutation(({ input }) => {
-    //         const newPost = {
-    //             id: database.posts.length + 1,
-    //             ...input 
-    //         };
-    //         return newPost
-    //     }),
+    create: publicProcedure
+        .input(RegistrationInput)
+        .mutation(({ input }) => {
+            const newUser = prisma.user.create({
+                data: {
+                    email: input.email,
+                    password: input.password
+                }
+            })
+            return newUser
+        }),
+    getUser: publicProcedure.query(() => {
+        return { id: 1, name: "k" }
+    }),
 
 
     // procedure for retrieving all the posts and return all posts from the database
-    // getAll: publicProcedure
-    //     .query(() => {
-    //         // Return all posts from the database
-    //         return database.posts
-    //     }),
+    getAll: publicProcedure
+        .query(() => {
+            // Return all posts from the database
+            return 'yesyes'
+        }),
 
     // procedure for retrieving a post by ID
     // getById: publicProcedure

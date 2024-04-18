@@ -7,53 +7,44 @@ import { Label } from "~/components/ui/label"
 import { Mutation, Query, useMutation, useQuery } from "@tanstack/react-query"
 import { api } from "~/trpc/react"
 import { useRouter } from "next/router"
+import { PrismaClient } from "@prisma/client"
+
+const prisma = new PrismaClient()
 
 
 export const RegisterForm = () => {
-    const [formData, setFormData] = useState({ email: '', password: '' })
-    // const registered = api.register.create.useMutation()
-    // const { query } = useRouter()
-
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const registerUser = api.register.create.useMutation()
+    const formData = {
+        email: email,
+        password: password
+    }
 
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
         try {
-            // const res = await fetch('/api/trpc', {
-            //     method: 'POST',
-            //     body: JSON.stringify({
-            //         email,
-            //         password
-            //     }),
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     }
-            // })
-            // if (res.ok) {
-            // }
+            // eslint-disable-next-line @typescript-eslint/await-thenable
+            await registerUser.mutate(formData)
         } catch (error) {
             console.error(error)
         }
-
-        console.log('email', formData.email)
-        console.log('password', formData.password)
     }
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value })
-    }
-
+    // console.log("email", email)
+    // console.log("password", password)
 
 
     return (
-        <form className="space-y-12 w-[400px]">
+        <form onSubmit={onSubmit} className="space-y-12 w-[400px]">
             <div className="grid w-full max-w-sm items-center gap-1.5">
                 <Label htmlFor="email">Email</Label>
-                <Input value={formData.email} onChange={handleChange} id="email" type="email" />
+                <Input value={email} onChange={(e) => setEmail(e.target.value)} id="email" type="email" />
             </div>
             <div>
                 <Label htmlFor="password">Password</Label>
-                <Input value={formData.password} onChange={handleChange} id="password" type="password" />
+                <Input value={password} onChange={(e) => setPassword(e.target.value)} id="password" type="password" />
             </div>
             <div className="w-full">
                 <Button className="w-full">Register</Button>
