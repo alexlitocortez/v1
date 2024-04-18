@@ -1,28 +1,67 @@
-import NextAuth, { Awaitable, RequestInternal, User } from "next-auth"
+import NextAuth, { Awaitable, RequestInternal, User, type NextAuthOptions } from "next-auth"
 import GitHubProvider from "next-auth/providers/github"
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { OAuthConfig, OAuthUserConfig } from "next-auth/providers/oauth";
+import bcrypt, { compare } from 'bcrypt'
+import { PrismaClient } from "@prisma/client";
+import { prisma } from "~/lib/prisma";
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
+    session: {
+        strategy: 'jwt'
+    },
+    secret: process.env.NEXTAUTH_SECRET,
     providers: [
-        GitHubProvider({
-            clientId: process.env.GITHUB_ID ?? "",
-            clientSecret: process.env.GITHUB_SECRET ?? "",
+        CredentialsProvider({
+            name: 'Sign in',
+            credentials: {
+                email: { label: "Email", type: "email", placeholder: 'hello@example.com' },
+                password: { label: "Password", type: "password" }
+            },
+            async authorize(credentials, req) {
+                if (!credentials?.email || !credentials.password) {
+                    return null
+                }
+
+                const user = await prisma.user.findUnique({
+                    where: {
+                        email: credentials.email
+                    }
+                })
+
+                if (!user) {
+                    return null
+                }
+
+                const isPasswordValid = await compare(
+                    credentials.password,
+                    user.password ?? ''
+                )
+
+                if (!isPasswordValid) {
+                    return null
+                }
+
+                return {
+                    id: user.id.toString(),
+                    email: user.email,
+                    name: user.name ?? '',
+                    randomKey: 'Hey cool'
+                }
+            },
         }),
         GoogleProvider({
             clientId: process.env.GOOGLE_ID ?? "",
             clientSecret: process.env.GOOGLE_SECRET ?? ""
-        })
+        }),
     ],
     // callbacks: {
-    //     async signIn({ account, profile }) {
-    //         if (account.provider === "google") {
-    //             return profile.email_verified && profile.email.endsWith("@example.com")
-    //         }
-    //         return true
-    //     }
-    // }
+
+    // },
+    pages: {
+        signIn: "/login",
+    }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

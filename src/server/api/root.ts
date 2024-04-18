@@ -10,7 +10,6 @@ import { registrationRouter } from "./routers/registration";
  */
 export const appRouter = createTRPCRouter({
   post: postRouter,
-  // example: exampleRouter
   register: registrationRouter
 });
 

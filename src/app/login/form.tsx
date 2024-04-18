@@ -6,6 +6,7 @@ import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
 import { Mutation, useMutation } from "@tanstack/react-query"
 import { api } from "~/trpc/react"
+import { signIn } from "next-auth/react"
 
 
 export const LoginForm = () => {
@@ -30,7 +31,8 @@ export const LoginForm = () => {
                 <Input value={password} onChange={(e) => setPassword(e.target.value)} id="password" type="password" />
             </div>
             <div className="w-full">
-                <Button className="w-full">Login</Button>
+                <Button className="w-full" onClick={() => signIn()}>Login</Button>
+                <button className="w-full" onClick={() => signIn("google")}>Sign in with Google</button>
             </div>
         </form>
     )

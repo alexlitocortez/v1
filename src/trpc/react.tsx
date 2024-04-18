@@ -5,6 +5,8 @@ import { httpBatchLink, loggerLink, unstable_httpBatchStreamLink } from "@trpc/c
 import { createTRPCReact } from "@trpc/react-query";
 import { useState } from "react";
 import SuperJSON from "superjson";
+import { createTRPCClient } from "@trpc/client";
+import { httpLink } from "@trpc/client";
 
 import { type AppRouter } from "~/server/api/root";
 
@@ -31,6 +33,8 @@ export const api = createTRPCReact<AppRouter>();
 export function TRPCReactProvider(props: { children: React.ReactNode }) {
   const queryClient = getQueryClient();
 
+
+
   const [trpcClient] = useState(() =>
     api.createClient({
       links: [
@@ -40,13 +44,7 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
             (op.direction === "down" && op.result instanceof Error),
         }),
         // httpBatchLink({
-        //   url: `http://localhost:3000/api/trpc`,
-        //   headers() {
-        //     return {
-        //       Authorization: `Bearer ${token}`
-        //     }
-        //   },
-        //   transformer: SuperJSON
+        //   url: 'http://localhost:3000',
         // }),
         unstable_httpBatchStreamLink({
           transformer: SuperJSON,
@@ -76,3 +74,4 @@ function getBaseUrl() {
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
   return `http://localhost:${process.env.PORT ?? 3000}`;
 }
+
