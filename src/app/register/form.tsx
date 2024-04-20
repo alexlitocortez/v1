@@ -26,7 +26,7 @@ export const RegisterForm = () => {
 
         try {
             // eslint-disable-next-line @typescript-eslint/await-thenable
-            await registerUser.mutate(formData)
+            registerUser.mutate(formData)
         } catch (error) {
             console.error(error)
         }

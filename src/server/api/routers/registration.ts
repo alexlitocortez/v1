@@ -1,6 +1,8 @@
 import { PrismaClient } from "@prisma/client";
+import { NextResponse } from "next/server";
 import { number, z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import bcrypt from "bcrypt"
 
 export const RegistrationInput = z.object({
     email: z.string().email(),
@@ -15,14 +17,17 @@ export const User = z.object({
 
 const prisma = new PrismaClient()
 
+// const hashedPassword = await bcrypt.hash(password, 10)
+
 export const registrationRouter = createTRPCRouter({
     create: publicProcedure
         .input(RegistrationInput)
         .mutation(({ input }) => {
+            const hashedPassword = bcrypt.hashSync(input.password, 10)
             const newUser = prisma.user.create({
                 data: {
                     email: input.email,
-                    password: input.password
+                    password: hashedPassword
                 }
             })
             return newUser

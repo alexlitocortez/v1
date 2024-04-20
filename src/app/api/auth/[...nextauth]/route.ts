@@ -6,6 +6,7 @@ import { OAuthConfig, OAuthUserConfig } from "next-auth/providers/oauth";
 import bcrypt, { compare } from 'bcrypt'
 import { PrismaClient } from "@prisma/client";
 import { prisma } from "~/lib/prisma";
+import { JWT } from "next-auth/jwt";
 
 export const authOptions: NextAuthOptions = {
     session: {
@@ -46,7 +47,7 @@ export const authOptions: NextAuthOptions = {
                 return {
                     id: user.id.toString(),
                     email: user.email,
-                    name: user.name ?? '',
+                    password: user.password ?? '',
                     randomKey: 'Hey cool'
                 }
             },
@@ -56,9 +57,17 @@ export const authOptions: NextAuthOptions = {
             clientSecret: process.env.GOOGLE_SECRET ?? ""
         }),
     ],
-    // callbacks: {
-
-    // },
+    callbacks: {
+        async jwt({ token, user, session }) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            console.log("jwt callback", { token, user, session })
+            return token
+        },
+        async session({ session, token, user }) {
+            console.log("session callback", { session, token, user })
+            return session
+        }
+    },
     pages: {
         signIn: "/login",
     }
