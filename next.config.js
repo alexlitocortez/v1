@@ -9,7 +9,8 @@ const nextConfig = {
     experimental: {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
-        serverActions: true
+        serverActions: true,
+        serverComponentsExternalPackages: ['@prisma/client', 'bcrypt']
     }
 };
 

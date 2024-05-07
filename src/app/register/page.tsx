@@ -6,7 +6,6 @@ import { useQuery } from "@tanstack/react-query"
 import { api } from "~/trpc/react"
 
 const Register = () => {
-
     return (
         <div className="h-screen w-screen flex justify-center items-center">
             <div className="shadow-xl px-8 pb-8 pt-12 bg-white rounded-xl space-y-12">

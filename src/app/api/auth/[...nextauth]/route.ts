@@ -6,13 +6,16 @@ import { OAuthConfig, OAuthUserConfig } from "next-auth/providers/oauth";
 import bcrypt, { compare } from 'bcrypt'
 import { PrismaClient } from "@prisma/client";
 import { prisma } from "~/lib/prisma";
+import { PrismaAdapter } from "@auth/prisma-adapter"
 import { JWT } from "next-auth/jwt";
+import { Adapter } from "next-auth/adapters";
 
 export const authOptions: NextAuthOptions = {
     session: {
         strategy: 'jwt'
     },
     secret: process.env.NEXTAUTH_SECRET,
+    adapter: PrismaAdapter(prisma) as Adapter,
     providers: [
         CredentialsProvider({
             name: 'Sign in',
@@ -21,34 +24,30 @@ export const authOptions: NextAuthOptions = {
                 password: { label: "Password", type: "password" }
             },
             async authorize(credentials, req) {
-                if (!credentials?.email || !credentials.password) {
-                    return null
+                if (!credentials?.password) {
+                    return null;
                 }
+
+                const hashedPassword: string = bcrypt.hashSync(credentials?.password, 10)
+                const userCredentials = {
+                    email: credentials?.email,
+                    password: hashedPassword
+                };
 
                 const user = await prisma.user.findUnique({
                     where: {
-                        email: credentials.email
+                        email: userCredentials?.email
                     }
                 })
 
-                if (!user) {
-                    return null
-                }
-
-                const isPasswordValid = await compare(
-                    credentials.password,
-                    user.password ?? ''
-                )
-
-                if (!isPasswordValid) {
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises, @typescript-eslint/no-unsafe-argument
+                if (!user || !(await bcrypt.compare(credentials?.password, userCredentials?.password))) {
                     return null
                 }
 
                 return {
-                    id: user.id.toString(),
-                    email: user.email,
-                    password: user.password ?? '',
-                    randomKey: 'Hey cool'
+                    id: user?.id,
+                    email: user?.email
                 }
             },
         }),
@@ -58,9 +57,16 @@ export const authOptions: NextAuthOptions = {
         }),
     ],
     callbacks: {
-        async jwt({ token, user, session }) {
+        async jwt({ token, user, session, account }) {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             console.log("jwt callback", { token, user, session })
+            if (user) {
+                return {
+                    ...token,
+                    email: user.email,
+                }
+            }
+            console.log("token callback", token)
             return token
         },
         async session({ session, token, user }) {
@@ -70,10 +76,11 @@ export const authOptions: NextAuthOptions = {
     },
     pages: {
         signIn: "/login",
-    }
+    },
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 export const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST }
+

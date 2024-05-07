@@ -12,7 +12,7 @@ import { loginRouter } from "./routers/login";
 export const appRouter = createTRPCRouter({
   post: postRouter,
   register: registrationRouter,
-  login: loginRouter
+  login: loginRouter,
 });
 
 // export type definition of API
