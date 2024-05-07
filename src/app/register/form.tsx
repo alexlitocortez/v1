@@ -32,10 +32,6 @@ export const RegisterForm = () => {
         }
     }
 
-    // console.log("email", email)
-    // console.log("password", password)
-
-
     return (
         <form onSubmit={onSubmit} className="space-y-12 w-[400px]">
             <div className="grid w-full max-w-sm items-center gap-1.5">

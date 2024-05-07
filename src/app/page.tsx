@@ -1,13 +1,12 @@
 import Link from "next/link";
 
-import { CreatePost } from "~/app/_components/create-post";
+import { CreatePost } from "~/components/ui/Othercomponents/create-post";
 import { api } from "~/trpc/server";
-import MaxWidthWrapper from "./_components/MaxWidthWrapper";
+import MaxWidthWrapper from "../components/ui/Othercomponents/MaxWidthWrapper";
 import { ArrowRight } from "lucide-react";
 import { buttonVariants } from "~/components/ui/button";
 
 export default async function Home() {
-  const hello = await api.post.hello({ text: "from tRPC" });
 
   return (
     <>

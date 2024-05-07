@@ -5,8 +5,8 @@ import { Inter } from "next/font/google";
 import { getServerSession } from "next-auth";
 
 import { TRPCReactProvider } from "~/trpc/react";
-import Navbar from "./_components/Navbar";
-import SessionProvider from "./_components/SessionProvider";
+import Navbar from "../components/ui/Othercomponents/Navbar";
+import SessionProvider from "../components/ui/Othercomponents/SessionProvider";
 
 const inter = Inter({
   subsets: ["latin"],

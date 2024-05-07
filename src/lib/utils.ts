@@ -5,5 +5,3 @@ import { signIn } from "next-auth/react"
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
-
-
