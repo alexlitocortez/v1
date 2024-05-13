@@ -4,8 +4,6 @@ import { useEffect, useState } from "react"
 import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
-import { Mutation, useMutation, useQuery } from "@tanstack/react-query"
-import { api } from "~/trpc/react"
 import { signIn } from "next-auth/react"
 import GoogleIcon from '@mui/icons-material/Google';
 
