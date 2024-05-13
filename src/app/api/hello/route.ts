@@ -1,46 +1,36 @@
 import { type NextApiRequest, type NextApiResponse } from 'next';
 import { NextResponse, NextRequest } from 'next/server'
-import * as cheerio from 'cheerio';
 import axios from 'axios';
-import { error } from 'console';
+import puppeteer from 'puppeteer';
 
 
 export async function POST(req: Request) {
     const data = await req.json() as string
-    console.log("data received", data)
+    console.log("data", data)
 
-    const response = await axios.get(data)
+    const browser = await puppeteer.launch()
+    const page = await browser.newPage()
 
-    const html = response.data as string
+    // Navigate the page to a URL
+    await page.goto(data)
 
-    const $ = cheerio.load(html)
+    const paragraphWithClass = await page.evaluate(() => {
+        const paragraph = document.querySelector('p.hero__subtitle')
 
-    const downloads = $('.hero__subtitle p').text()
-    console.log("downloads", downloads)
+        if (paragraph) {
+            return paragraph.textContent
+        } else {
+            return null;
+        }
+    })
 
-    return NextResponse.json({ message: 'get it!' })
+    console.log(paragraphWithClass)
+
+    await browser.close()
+
+    return NextResponse.json({ message: 'successful ya hurt!' })
 }
 
-// try {
-
-//     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-//     const response = await axios.get(data);
-
-//     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-//     const html = response.data;
-
-//     // Load HTML content into Cheerio
-//     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-//     const $ = cheerio.load(html);
-
-//     // Extract data from the webpage using Cheerio selectors
-//     const downloads = $('.markdown p').text();
-
-//     // Return the extracted data
-//     return NextResponse.json({ downloads: downloads })
-// } catch (error) {
-//     console.error('Error fetching data:', error)
-//     res.status(500).json({ error: 'An error occurred while fetching data' })
-// }
-
+// scrape multiple SaaS pages
+// figure out how to scrape multiple pages
 
