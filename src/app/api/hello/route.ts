@@ -3,6 +3,9 @@ import { NextResponse, NextRequest } from 'next/server'
 import axios from 'axios';
 import puppeteer from 'puppeteer';
 
+const websites = [
+    { url: 'https://www.sideprojectors.com/#/', selector: '', clickNeeded: true }
+]
 
 export async function POST(req: Request) {
     const data = await req.json() as string
@@ -14,23 +17,23 @@ export async function POST(req: Request) {
     // Navigate the page to a URL
     await page.goto(data)
 
-    const paragraphWithClass = await page.evaluate(() => {
-        const paragraph = document.querySelector('p.hero__subtitle')
 
-        if (paragraph) {
-            return paragraph.textContent
-        } else {
-            return null;
-        }
-    })
+    // const resultLinks = await page.$$('a');
 
-    console.log(paragraphWithClass)
+    const result = await page.$("//a[contains(., 'None')]")
+
+
+
+    console.log(result)
+
+    // page.setDefaultTimeout(3000)
+
+    // const checkbox = document.querySelector('input[type="checkbox"]#input-project-type-saas')
 
     await browser.close()
 
     return NextResponse.json({ message: 'successful ya hurt!' })
 }
 
-// scrape multiple SaaS pages
-// figure out how to scrape multiple pages
+
 
