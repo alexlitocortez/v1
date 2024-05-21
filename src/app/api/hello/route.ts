@@ -20,9 +20,12 @@ export async function POST(req: Request) {
 
     // const resultLinks = await page.$$('a');
 
-    const result = await page.$("//a[contains(., 'None')]")
+    // const result = await page.$("//a[contains(., 'None')]")
 
+    const result = await page.waitForSelector('div > .text-gray-500 hover:text-gray-700')
 
+    await result?.click();
+    await result?.dispose();
 
     console.log(result)
 

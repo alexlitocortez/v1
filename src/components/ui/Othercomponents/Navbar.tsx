@@ -40,6 +40,9 @@ const Navbar = () => {
                     <Link href='/' className='flex z-40 font-semibold'>
                         <span>V1</span>
                     </Link>
+                    <Link href='/pricing' className='flex z-40 font-semibold'>
+                        <span>Pricing</span>
+                    </Link>
                     {/* todo: add mobile navbar */}
                     <div>
                         <>
