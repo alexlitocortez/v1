@@ -19,12 +19,14 @@ const page = () => {
                 alignItems="stretch"
                 minHeight="100vh"
             >
-                <p className='mt-5 mb-5 font-bold md:text-3xl max-w-prose text-zinc-700 sm:text-lg'>
-                    Pricing
-                </p>
-                <h1 className="max-w-4xl text-5xl font-bold md:text-6xl lg:text-7xl">
-                    Save hours of research and find your <span className="text-blue-600">opportunity</span>.
-                </h1>
+                <Box>
+                    <p className='mt-5 mb-5 font-bold md:text-3xl max-w-prose text-zinc-700 sm:text-lg'>
+                        Pricing
+                    </p>
+                    <h1 className="max-w-4xl text-5xl font-bold md:text-6xl lg:text-7xl">
+                        Save hours of research and find your <span className="text-blue-600">opportunity</span>.
+                    </h1>
+                </Box>
                 <Grid container spacing={2} className='mt-3'>
                     <Grid item xs={12} md={6}>
                         <Card className='h-full flex flex-col p-5'>
@@ -44,7 +46,7 @@ const page = () => {
                                 </div>
                             </CardContent>
                             <div className='flex'>
-                                <Button size='xl' className='m-auto'>Get Sassier</Button>
+                                <Button size='xl' className='m-auto'>Get Side Vision</Button>
                             </div>
                         </Card>
                     </Grid>
@@ -72,7 +74,7 @@ const page = () => {
                                 </div>
                             </CardContent>
                             <div className='flex flex-col'>
-                                <Button size='xl' className='m-auto'>Get Sassier</Button>
+                                <Button size='xl' className='m-auto'>Get Side Vision</Button>
                             </div>
                         </Card>
                     </Grid>

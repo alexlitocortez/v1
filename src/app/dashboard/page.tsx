@@ -9,12 +9,11 @@ import { DataTable } from '~/components/ui/Othercomponents/DataTable';
 import { Payment, columns } from './data';
 
 async function getData(): Promise<Payment[]> {
-    // Fetch data from your API here.
     return [
         {
-            id: "728ed52f",
-            amount: 100,
-            status: "pending",
+            name: "728ed52f",
+            description: "fff",
+            sale_amount: "500",
         },
     ]
 }
