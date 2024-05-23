@@ -2,22 +2,22 @@ import { ColumnDef } from "@tanstack/react-table"
 
 
 export type Payment = {
-    name: string
+    title: string
     description: string
     sale_amount: string
 }
 
 export const columns: ColumnDef<Payment>[] = [
     {
-        accessorKey: "Name",
-        header: "Name",
+        accessorKey: "title",
+        header: "Title",
     },
     {
-        accessorKey: "Description",
+        accessorKey: "description",
         header: "Description"
     },
     {
-        accessorKey: "Sale Amount",
+        accessorKey: "sale_amount",
         header: "Sale Amount"
     }
 ]

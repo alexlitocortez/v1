@@ -9,18 +9,30 @@ import { DataTable } from '~/components/ui/Othercomponents/DataTable';
 import { Payment, columns } from './data';
 
 async function getData(): Promise<Payment[]> {
-    return [
-        {
-            name: "728ed52f",
-            description: "fff",
-            sale_amount: "500",
-        },
-    ]
+    try {
+        const res = await fetch('/api/hello', {
+            method: 'POST',
+            body: JSON.stringify('https://www.sideprojectors.com/#/')
+        })
+
+        // Handle response if necessary
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const data: Payment[] = await res.json();
+        console.log('Response from server:', data);
+        return data
+    } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        console.error(error)
+        return []
+    }
 }
 
 
 const Dashboard = () => {
     const [inputValue, setInputValue] = useState('');
+    const [title, setTitle] = useState<Payment[]>([])
+    const [description, setDescription] = useState<Payment[]>([])
+    const [saleAmount, setSaleAmount] = useState<Payment[]>([])
     const [data, setData] = useState<Payment[]>([])
 
     useEffect(() => {
@@ -28,6 +40,7 @@ const Dashboard = () => {
             try {
                 const response = await getData();
                 setData(response)
+                console.log("titles", data)
             } catch (error) {
                 console.error('Error fetching data:', error)
             }
@@ -38,29 +51,30 @@ const Dashboard = () => {
         });
     }, [])
 
-    async function onSubmit(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault();
 
-        try {
-            const res = await fetch('/api/hello', {
-                method: 'POST',
-                body: JSON.stringify(inputValue)
-            })
+    // async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    //     event.preventDefault();
 
-            // Handle response if necessary
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const response = await res.json();
-            console.log('Response from server:', response);
-        } catch (error) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-            console.error(error)
-        }
-    }
+    //     try {
+    //         const res = await fetch('/api/hello', {
+    //             method: 'POST',
+    //             body: JSON.stringify(inputValue)
+    //         })
+
+    //         // Handle response if necessary
+    //         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    //         const response = await res.json();
+    //         console.log('Response from server:', response);
+    //     } catch (error) {
+    //         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    //         console.error(error)
+    //     }
+    // }
 
     return (
         <>
             <MaxWidthWrapper className="mb-12 mt-28 sm:mt-40 flex flex-col items-center justify-center text-center">
-                <form onSubmit={onSubmit}>
+                <form >
                     <Input value={inputValue} onChange={(e) => setInputValue(e.target.value)} id='inputValue' type='inputValue' />
                     <Button type='submit'>Search</Button>
                 </form>
