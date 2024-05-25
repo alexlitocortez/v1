@@ -7,6 +7,8 @@ import { getServerSession } from "next-auth";
 import { TRPCReactProvider } from "~/trpc/react";
 import Navbar from "../components/ui/Othercomponents/Navbar";
 import SessionProvider from "../components/ui/Othercomponents/SessionProvider";
+import { ThemeProvider } from "~/components/ui/theme-provider";
+import { ModeToggle } from "~/components/ui/mode-toggle";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -28,9 +30,19 @@ export default async function RootLayout({
   return (
     <html lang="en" className="light">
       <body className={cn('min-h-screen font-sans antialiased grainy', inter.className)}>
-        <SessionProvider session={session}>
-          <TRPCReactProvider><Navbar />{children}</TRPCReactProvider>
-        </SessionProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange>
+          <SessionProvider session={session}>
+            <TRPCReactProvider>
+              <Navbar />
+              <ModeToggle />
+              {children}
+            </TRPCReactProvider>
+          </SessionProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

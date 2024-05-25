@@ -1,14 +1,10 @@
 "use client"
 
-import { buttonVariants } from "~/components/ui/button"
-import MaxWidthWrapper from "./MaxWidthWrapper"
-import Link from "next/link"
-import { ArrowRight } from "lucide-react"
-import { signIn, signOut, useSession } from "next-auth/react"
-import { usePathname } from "next/navigation"
-
-const ACTIVE_ROUTE = "py-1 px-2 text-gray-300 bg-gray-700"
-const INACTIVE_ROUTE = "py-1 px-2 text-gray-500 hover:text-gray-300 hover:bg-gray-700"
+import MaxWidthWrapper from "./MaxWidthWrapper";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
 
 function AuthButton() {
     const { data: session } = useSession()
@@ -39,6 +35,9 @@ const Navbar = () => {
                 <div className="flex h-14 items-center justify-between border-b border-zinc-200">
                     <Link href='/' className='flex z-40 font-semibold'>
                         <span>V1</span>
+                    </Link>
+                    <Link href='/pricing' className='flex z-40 font-semibold'>
+                        <span>Pricing</span>
                     </Link>
                     {/* todo: add mobile navbar */}
                     <div>
