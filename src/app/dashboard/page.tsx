@@ -29,10 +29,6 @@ async function getData(): Promise<Payment[]> {
 
 
 const Dashboard = () => {
-    const [inputValue, setInputValue] = useState('');
-    const [title, setTitle] = useState<Payment[]>([])
-    const [description, setDescription] = useState<Payment[]>([])
-    const [saleAmount, setSaleAmount] = useState<Payment[]>([])
     const [data, setData] = useState<Payment[]>([])
 
     useEffect(() => {
@@ -74,10 +70,10 @@ const Dashboard = () => {
     return (
         <>
             <MaxWidthWrapper className="mb-12 mt-28 sm:mt-40 flex flex-col items-center justify-center text-center">
-                <form >
+                {/* <form >
                     <Input value={inputValue} onChange={(e) => setInputValue(e.target.value)} id='inputValue' type='inputValue' />
                     <Button type='submit'>Search</Button>
-                </form>
+                </form> */}
                 <DataTable columns={columns} data={data} />
             </MaxWidthWrapper>
         </>
