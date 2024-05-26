@@ -2,30 +2,27 @@
 
 import { useEffect, useState } from 'react';
 import MaxWidthWrapper from '~/components/ui/Othercomponents/MaxWidthWrapper';
-import { Input } from '~/components/ui/input';
-import { Button } from "~/components/ui/button";
-import { type FormEvent } from 'react';
 import { DataTable } from '~/components/ui/Othercomponents/DataTable';
-import { Payment, columns } from './data';
+import { type Payment, columns } from './data';
 
-async function getData(): Promise<Payment[]> {
-    try {
-        const res = await fetch('/api/hello', {
-            method: 'POST',
-            body: JSON.stringify('https://www.sideprojectors.com/#/')
-        })
+// async function getData(): Promise<Payment[]> {
+//     try {
+//         const res = await fetch('/api/hello', {
+//             method: 'POST',
+//             body: JSON.stringify('https://www.sideprojectors.com/#/')
+//         })
 
-        // Handle response if necessary
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const data: Payment[] = await res.json();
-        console.log('Response from server:', data);
-        return data
-    } catch (error) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        console.error(error)
-        return []
-    }
-}
+//         // Handle response if necessary
+//         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+//         const data: Payment[] = await res.json();
+//         console.log('Response from server:', data);
+//         return data
+//     } catch (error) {
+//         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+//         console.error(error)
+//         return []
+//     }
+// }
 
 
 const Dashboard = () => {
@@ -34,7 +31,13 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await getData();
+                const res = await fetch('/api/hello', {
+                    method: 'POST',
+                    body: JSON.stringify('https://www.sideprojectors.com/#/')
+                })
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                const data: Payment[] = await res.json();
+                const response = data;
                 setData(response)
                 console.log("titles", data)
             } catch (error) {
@@ -47,33 +50,9 @@ const Dashboard = () => {
         });
     }, [])
 
-
-    // async function onSubmit(event: FormEvent<HTMLFormElement>) {
-    //     event.preventDefault();
-
-    //     try {
-    //         const res = await fetch('/api/hello', {
-    //             method: 'POST',
-    //             body: JSON.stringify(inputValue)
-    //         })
-
-    //         // Handle response if necessary
-    //         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    //         const response = await res.json();
-    //         console.log('Response from server:', response);
-    //     } catch (error) {
-    //         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    //         console.error(error)
-    //     }
-    // }
-
     return (
         <>
             <MaxWidthWrapper className="mb-12 mt-28 sm:mt-40 flex flex-col items-center justify-center text-center">
-                {/* <form >
-                    <Input value={inputValue} onChange={(e) => setInputValue(e.target.value)} id='inputValue' type='inputValue' />
-                    <Button type='submit'>Search</Button>
-                </form> */}
                 <DataTable columns={columns} data={data} />
             </MaxWidthWrapper>
         </>
