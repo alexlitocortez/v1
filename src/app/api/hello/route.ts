@@ -20,8 +20,6 @@ interface ProjectData {
 export async function POST(req: Request) {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
-    const nextButtonPath = "text=Next";
-    const nextButton = await page.$(nextButtonPath);
 
     await page.goto('https://www.sideprojectors.com/#/')
 
@@ -59,7 +57,7 @@ export async function POST(req: Request) {
 //     const page = await browser.newPage();
 
 //     try {
-//         await page.goto('https://www.sideprojectors.com/#/')
+//         await page.goto('https://www.sideprojectors.com/#/');
 
 //         const allData: ProjectData[] = [];
 
@@ -95,72 +93,33 @@ export async function POST(req: Request) {
 //             })
 
 //             allData.push(...data)
-//             console.log("allData", allData)
-//         }
-
-//         async function scrollToBottom() {
-//             let previousHeight;
-//             while (true) {
-//                 previousHeight = await page.evaluate('document.body.scrollHeight'); // Get the height of the document
-//                 await page.evaluate('window.scrollTo(0, document.body.scrollHeight)'); // Scroll to the bottom of the page
-//                 const currentHeight = await page.evaluate('document.body.scrollHeight'); // Check the new height of the document
-//                 if (currentHeight === previousHeight) break; // If the height hasn't changed, we have reached the bottom
-//                 page.setDefaultTimeout(3000)
-//             }
-//         }
-
-//         // async function clickNextButton() {
-//         //     const buttons = Array.from(document.querySelectorAll('.pagination-link'));
-//         //     const targetButton = buttons.find(button => button.textContent?.trim() === 'Next') as HTMLElement;
-//         //     await Promise.all([
-//         //         page.evaluate(() => {
-
-//         //             if (targetButton) {
-//         //                 // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-//         //                 targetButton.click();
-//         //             }
-//         //         }),
-//         //     ]);
-//         // }
-//         async function clickNextButton() {
-//             const nextButtonClicked = await page.evaluate(() => {
-//                 const buttons = Array.from(document.querySelectorAll('.pagination-link'));
-//                 const targetButton = buttons.find(button => button.textContent?.trim() === 'Next');
-//                 if (targetButton) {
-//                     (targetButton as HTMLElement).click();
-//                     return true;
-//                 }
-//                 return false;
-//             });
-//             return nextButtonClicked
 //         }
 
 //         await scrapePage();
 
-//         while (true) {
+//         let lastPageReached = false;
 
-//             await scrollToBottom();
+//         while (!lastPageReached) {
+//             const nextPageLink = await page.$('.pagination-link')
 
-//             const nextButtonClicked = await clickNextButton();
-//             if (!nextButtonClicked) break;
+//             if (!nextPageLink) {
+//                 console.log('No more pages. Exiting.')
+//                 lastPageReached = true;
+//             } else {
+//                 await nextPageLink.click();
 
-//             // const nextButtonExists = await page.evaluate(() => {
-//             //     const buttons = Array.from(document.querySelectorAll('.pagination-link'));
-//             //     const targetButton = buttons.find(button => button.textContent?.trim() === 'Next');
-//             //     return !!targetButton;
-//             // });
+//                 await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 90000 })
 
-//             // if (!nextButtonExists) break;
+//                 const URL = page.url();
+//                 console.log(URL)
 
-//             // await clickNextButton();
-//             await page.waitForNavigation({ waitUntil: 'networkidle0' });
-//             await scrapePage();
+//                 await scrapePage()
+//             }
 //         }
-//         return NextResponse.json({ data: allData })
 
+//         return NextResponse.json({ data: allData })
 //     } catch (error) {
-//         console.error('An error occurred while scraping.');
-//         return new NextResponse('An error occurred while scraping.', { status: 500 })
+//         return NextResponse.json({ error: 'An error occurred while scraping.' }, { status: 500 })
 //     } finally {
 //         await browser.close();
 //     }
