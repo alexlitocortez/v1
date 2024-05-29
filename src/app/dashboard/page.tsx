@@ -6,6 +6,10 @@ import { DataTable } from '~/components/ui/Othercomponents/DataTable';
 import { type Payment, columns } from './data';
 import { Progress } from '~/components/ui/progress';
 
+interface ApiResponse {
+    data: Payment[]
+}
+
 async function getData(): Promise<Payment[]> {
     try {
         const res = await fetch('/api/hello', {
@@ -14,12 +18,15 @@ async function getData(): Promise<Payment[]> {
         })
 
         // Handle response if necessary
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const data: Payment[] = await res.json();
-        console.log('Response from server:', data);
-        return data
+        const result: unknown = await res.json();
+
+        if (result && typeof result === 'object' && 'data' in result && Array.isArray((result as ApiResponse).data)) {
+            return (result as ApiResponse).data;
+        } else {
+            console.error('Invalid response format:', result);
+            return [];
+        }
     } catch (error) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         console.error(error)
         return []
     }
@@ -68,8 +75,8 @@ const Dashboard = () => {
     return (
         <>
             <MaxWidthWrapper className="mb-12 mt-28 sm:mt-40 flex flex-col items-center justify-center text-center">
-                {!loading && data.length > 0 && <DataTable columns={columns} data={data} />}
-                {!loading && data.length === 0 && <Progress value={50} />}
+                {!loading && data?.length > 0 && <DataTable columns={columns} data={data} />}
+                {loading && data?.length === 0 && <Progress value={50} />}
             </MaxWidthWrapper>
         </>
     )
