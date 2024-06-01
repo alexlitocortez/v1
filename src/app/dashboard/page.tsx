@@ -8,6 +8,7 @@ import { Progress } from '~/components/ui/progress';
 
 interface ApiResponse {
     data: Payment[]
+    result: Payment[]
 }
 
 async function getData(): Promise<Payment[]> {
@@ -20,8 +21,22 @@ async function getData(): Promise<Payment[]> {
         // Handle response if necessary
         const result: unknown = await res.json();
 
+        console.log("response from server", (result as ApiResponse).data)
+
         if (result && typeof result === 'object' && 'data' in result && Array.isArray((result as ApiResponse).data)) {
-            return (result as ApiResponse).data;
+            const data: Payment[] = (result as ApiResponse).data;
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+
+            const newData = data.map((item) => ({
+                title: item.title ?? '',
+                description: item.description ?? '',
+                sale_amount: item.sale_amount ?? '',
+                project_link: item.project_link ?? ''
+            }));
+
+            console.log("get data", newData)
+
+            return newData
         } else {
             console.error('Invalid response format:', result);
             return [];
@@ -41,8 +56,12 @@ const Dashboard = () => {
         const fetchData = async () => {
             try {
                 const response = await getData();
-                setData(response)
-                setLoading(false)
+                if (response) {
+                    setData(response)
+                    setLoading(false)
+                } else {
+                    return
+                }
             } catch (error) {
                 console.log("Error", error)
             }
