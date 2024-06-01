@@ -20,7 +20,7 @@ const page = () => {
                 minHeight="100vh"
             >
                 <Box>
-                    <p className='mt-5 mb-5 font-bold md:text-3xl max-w-prose text-zinc-700 sm:text-lg'>
+                    <p className='mt-5 mb-5 font-bold md:text-3xl max-w-prose text-zinc-700 sm:text-lg dark:text-slate-300'>
                         Pricing
                     </p>
                     <h1 className="max-w-4xl text-5xl font-bold md:text-6xl lg:text-7xl">
@@ -46,7 +46,7 @@ const page = () => {
                                 </div>
                             </CardContent>
                             <div className='flex'>
-                                <Button size='xl' className='m-auto'>Get Side Vision</Button>
+                                <Button size='xl' className='m-auto dark:bg-black dark:text-white'>Get Side Vision</Button>
                             </div>
                         </Card>
                     </Grid>
@@ -74,7 +74,7 @@ const page = () => {
                                 </div>
                             </CardContent>
                             <div className='flex flex-col'>
-                                <Button size='xl' className='m-auto'>Get Side Vision</Button>
+                                <Button size='xl' className='m-auto dark:bg-black dark:text-white'>Get Side Vision</Button>
                             </div>
                         </Card>
                     </Grid>

@@ -2,11 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import MaxWidthWrapper from '~/components/ui/Othercomponents/MaxWidthWrapper';
-import { Input } from '~/components/ui/input';
-import { Button } from "~/components/ui/button";
-import { type FormEvent } from 'react';
 import { DataTable } from '~/components/ui/Othercomponents/DataTable';
-import { Payment, columns } from './data';
+import { type Payment, columns } from './data';
+import { Progress } from '~/components/ui/progress';
+
+interface ApiResponse {
+    data: Payment[]
+    result: Payment[]
+}
 
 async function getData(): Promise<Payment[]> {
     try {
@@ -16,12 +19,29 @@ async function getData(): Promise<Payment[]> {
         })
 
         // Handle response if necessary
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const data: Payment[] = await res.json();
-        console.log('Response from server:', data);
-        return data
+        const result: unknown = await res.json();
+
+        console.log("response from server", (result as ApiResponse).data)
+
+        if (result && typeof result === 'object' && 'data' in result && Array.isArray((result as ApiResponse).data)) {
+            const data: Payment[] = (result as ApiResponse).data;
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+
+            const newData = data.map((item) => ({
+                title: item.title ?? '',
+                description: item.description ?? '',
+                sale_amount: item.sale_amount ?? '',
+                project_link: item.project_link ?? ''
+            }));
+
+            console.log("get data", newData)
+
+            return newData
+        } else {
+            console.error('Invalid response format:', result);
+            return [];
+        }
     } catch (error) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         console.error(error)
         return []
     }
@@ -29,52 +49,53 @@ async function getData(): Promise<Payment[]> {
 
 
 const Dashboard = () => {
-    const [data, setData] = useState<Payment[]>([])
+    const [data, setData] = useState<Payment[]>([]);
+    const [loading, setLoading] = useState<boolean>(true); // State to track loading status
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await getData();
-                setData(response)
-                console.log("titles", data)
+                if (response) {
+                    setData(response)
+                    setLoading(false)
+                } else {
+                    return
+                }
             } catch (error) {
-                console.error('Error fetching data:', error)
+                console.log("Error", error)
             }
         }
-        fetchData().catch(error => {
-            // Handle any uncaught errors here
-            console.error('Unhandled error:', error);
-        });
-    }, [])
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        fetchData()
+    }, []);
+
+    useEffect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        const intervalId = setInterval(async () => {
+            if (data.length === 0) {
+                try {
+                    const newData = await getData();
+                    if (newData.length > 0) {
+                        setData(newData);
+                        clearInterval(intervalId); // Stop fetching once data is received
+                    }
+                } catch (error) {
+                    console.error("Error fetching data:", error);
+                }
+            }
+        }, 5000); // Fetch data every 5 seconds
+
+        return () => clearInterval(intervalId); // Cleanup on component unmount
+    }, [data]); // Run whenever data changes
 
 
-    // async function onSubmit(event: FormEvent<HTMLFormElement>) {
-    //     event.preventDefault();
-
-    //     try {
-    //         const res = await fetch('/api/hello', {
-    //             method: 'POST',
-    //             body: JSON.stringify(inputValue)
-    //         })
-
-    //         // Handle response if necessary
-    //         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    //         const response = await res.json();
-    //         console.log('Response from server:', response);
-    //     } catch (error) {
-    //         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    //         console.error(error)
-    //     }
-    // }
 
     return (
         <>
             <MaxWidthWrapper className="mb-12 mt-28 sm:mt-40 flex flex-col items-center justify-center text-center">
-                {/* <form >
-                    <Input value={inputValue} onChange={(e) => setInputValue(e.target.value)} id='inputValue' type='inputValue' />
-                    <Button type='submit'>Search</Button>
-                </form> */}
-                <DataTable columns={columns} data={data} />
+                {!loading && data?.length > 0 && <DataTable columns={columns} data={data} />}
+                {loading && data?.length === 0 && <Progress value={50} />}
             </MaxWidthWrapper>
         </>
     )

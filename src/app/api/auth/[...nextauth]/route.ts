@@ -58,19 +58,15 @@ export const authOptions: NextAuthOptions = {
     ],
     callbacks: {
         async jwt({ token, user, session, account }) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            console.log("jwt callback", { token, user, session })
             if (user) {
                 return {
                     ...token,
                     email: user.email,
                 }
             }
-            console.log("token callback", token)
             return token
         },
         async session({ session, token, user }) {
-            console.log("session callback", { session, token, user })
             return session
         }
     },
