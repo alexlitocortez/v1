@@ -27,16 +27,7 @@ async function getData(): Promise<Payment[]> {
             const data: Payment[] = (result as ApiResponse).data;
             // eslint-disable-next-line @typescript-eslint/no-empty-function
 
-            const newData = data.map((item) => ({
-                title: item.title ?? '',
-                description: item.description ?? '',
-                sale_amount: item.sale_amount ?? '',
-                project_link: item.project_link ?? ''
-            }));
-
-            console.log("get data", newData)
-
-            return newData
+            return data
         } else {
             console.error('Invalid response format:', result);
             return [];
@@ -70,24 +61,25 @@ const Dashboard = () => {
         fetchData()
     }, []);
 
-    useEffect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        const intervalId = setInterval(async () => {
-            if (data.length === 0) {
-                try {
-                    const newData = await getData();
-                    if (newData.length > 0) {
-                        setData(newData);
-                        clearInterval(intervalId); // Stop fetching once data is received
-                    }
-                } catch (error) {
-                    console.error("Error fetching data:", error);
-                }
-            }
-        }, 5000); // Fetch data every 5 seconds
+    // useEffect(() => {
+    //     // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    //     const intervalId = setInterval(async () => {
+    //         if (data.length === 0) {
+    //             try {
+    //                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+    //                 if (data.length > 0) {
+    //                     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    //                     // setData(newData);
+    //                     clearInterval(intervalId); // Stop fetching once data is received
+    //                 }
+    //             } catch (error) {
+    //                 console.error("Error fetching data:", error);
+    //             }
+    //         }
+    //     }, 5000); // Fetch data every 5 seconds
 
-        return () => clearInterval(intervalId); // Cleanup on component unmount
-    }, [data]); // Run whenever data changes
+    //     return () => clearInterval(intervalId); // Cleanup on component unmount
+    // }, [data]); // Run whenever data changes
 
 
 
@@ -102,3 +94,4 @@ const Dashboard = () => {
 }
 
 export default Dashboard
+
