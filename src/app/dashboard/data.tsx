@@ -13,16 +13,16 @@ export type Payment = {
 export const columns: ColumnDef<Payment>[] = [
     {
         id: "select",
-        header: ({ table }) => (
-            <Checkbox
-                checked={
-                    table.getIsAllPageRowsSelected() ||
-                    (table.getIsSomePageRowsSelected() && "indeterminate")
-                }
-                onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(!!value)}
-                aria-label="Select all"
-            />
-        ),
+        // header: ({ table }) => (
+        //     <Checkbox
+        //         checked={
+        //             table.getIsAllPageRowsSelected() ||
+        //             (table.getIsSomePageRowsSelected() && "indeterminate")
+        //         }
+        //         onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(!!value)}
+        //         aria-label="Select all"
+        //     />
+        // ),
         cell: ({ row }) => (
             <Checkbox
                 checked={row.getIsSelected()}
@@ -49,9 +49,11 @@ export const columns: ColumnDef<Payment>[] = [
         accessorKey: "project_link",
         header: "Project Link",
         cell: ({ row }) => (
-            <a href={row.original.project_link} target="_blank" rel="noopener noreferrer" className="underline decoration-sky-500">
-                Link
-            </a>
+            row.original.project_link ? (
+                <a href={row.original.project_link} target="_blank" rel="noopener noreferrer" className="underline decoration-sky-500">
+                    Link
+                </a>
+            ) : null
         ),
     }
 ]

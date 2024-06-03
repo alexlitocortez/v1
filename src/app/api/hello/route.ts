@@ -35,8 +35,8 @@ async function scrapePage() {
             selectors: { titles: '.h5-heading.listings', descriptions: '.body-text.s-light.opacity-70', saleAmounts: '.listing-card-infoblock > h5', projectLinks: 'a.listing-card-link.w-inline-block' }
         },
         {
-            url: 'https://nicheinvestor.com/search/?sort=newest&es=1&address=&min_price=&max_price=&es_category=45&es_status[0]=120&sort-1=newest&paged-1=1',
-            selectors: { titles: '.es-listing__title', descriptions: '.es-excerpt.es-listing--hide-on-grid', saleAmounts: '.es-price', projectLinks: '.es-listing__title > a' }
+            url: 'https://nicheinvestor.com/listings-all/',
+            selectors: { titles: '.es-listing__title', descriptions: '.es-excerpt.es-listing--hide-on-grid', saleAmounts: '.es-badges.es-listing--hide-on-list > .es-price', projectLinks: '.es-listing__title > a' }
         },
     ]
 
