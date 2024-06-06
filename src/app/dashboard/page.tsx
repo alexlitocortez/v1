@@ -25,7 +25,13 @@ async function getData(): Promise<Payment[]> {
         console.log("response from server", (result as ApiResponse).data)
 
         if (result && typeof result === 'object' && 'data' in result && Array.isArray((result as ApiResponse).data)) {
-            const data: Payment[] = (result as ApiResponse).data;
+            const data: Payment[] = (result as ApiResponse).data.map((item, index) => ({
+                id: item.id ?? index.toString(),
+                title: item.title,
+                description: item.description,
+                sale_amount: item.sale_amount,
+                project_link: item.project_link
+            }));
             // eslint-disable-next-line @typescript-eslint/no-empty-function
 
             return data
@@ -44,6 +50,8 @@ const Dashboard = () => {
     const [data, setData] = useState<Payment[]>([]);
     const [loading, setLoading] = useState<boolean>(true); // State to track loading status
     const [selectedPayments, setSelectedPayments] = useState<Payment[]>([]);
+    const [selectedRows, setSelectedRows] = useState<Payment[]>([]);
+
 
     const handleRowSelection = (payment: Payment, isSelected: boolean) => {
         setSelectedPayments(prev =>
@@ -70,32 +78,10 @@ const Dashboard = () => {
         fetchData()
     }, []);
 
-    // useEffect(() => {
-    //     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    //     const intervalId = setInterval(async () => {
-    //         if (data.length === 0) {
-    //             try {
-    //                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-    //                 if (data.length > 0) {
-    //                     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    //                     // setData(newData);
-    //                     clearInterval(intervalId); // Stop fetching once data is received
-    //                 }
-    //             } catch (error) {
-    //                 console.error("Error fetching data:", error);
-    //             }
-    //         }
-    //     }, 5000); // Fetch data every 5 seconds
-
-    //     return () => clearInterval(intervalId); // Cleanup on component unmount
-    // }, [data]); // Run whenever data changes
-
-
-
     return (
         <>
             <MaxWidthWrapper className="mb-12 mt-28 sm:mt-40 flex flex-col items-center justify-center text-center">
-                {!loading && data?.length > 0 && <DataTable columns={columns} data={data} onRowSelectionChange={handleRowSelection} />}
+                {!loading && data?.length > 0 && <DataTable columns={columns} data={data} selectedRows={selectedPayments} onRowSelectionChange={handleRowSelection} />}
                 {loading && data?.length === 0 && <Progress value={50} />}
             </MaxWidthWrapper>
         </>

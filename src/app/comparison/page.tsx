@@ -1,7 +1,7 @@
 
 
 const Comparison = () => {
-    return
+    return "hi"
 }
 
 export default Comparison

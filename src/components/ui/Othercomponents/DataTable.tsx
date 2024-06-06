@@ -27,8 +27,10 @@ import { boolean } from "zod";
 
 
 interface DataTableProps<TData, TValue> {
-    columns: ColumnDef<TData, TValue>[]
-    data: TData[]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    columns: ColumnDef<Payment, any>[];
+    data: Payment[];
+    selectedRows: Payment[];
     onRowSelectionChange: (payment: Payment, isSelected: boolean) => void;
 }
 
@@ -36,10 +38,11 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
     columns,
     data,
+    selectedRows,
     onRowSelectionChange
 }: DataTableProps<TData, TValue>) {
     const [rowSelection, setRowSelection] = useState({})
-    const table = useReactTable({
+    const table = useReactTable<Payment>({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
@@ -47,8 +50,11 @@ export function DataTable<TData, TValue>({
         onRowSelectionChange: setRowSelection,
         state: {
             rowSelection
-        }
+        },
     })
+
+    console.log("selected rows", selectedRows)
+
 
     return (
         <>
@@ -57,7 +63,7 @@ export function DataTable<TData, TValue>({
             {
                 table.getFilteredSelectedRowModel().rows.length > 1
                     ?
-                    <Button>Checkout</Button>
+                    <Button asChild variant="outline"><Link href="/comparison">Checkout</Link></Button>
                     :
                     <div>Click 2</div>
             }
@@ -83,10 +89,43 @@ export function DataTable<TData, TValue>({
                     </TableHeader>
                     <TableBody>
                         {table.getRowModel().rows?.length ? (
+                            table.getRowModel().rows.map((row) => {
+                                const isSelected = selectedRows.some(payment => payment.id === row.original.id);
+                                return (
+                                    <TableRow
+                                        key={row.id}
+                                        data-state={isSelected && "selected"}
+                                    >
+                                        {row.getVisibleCells().map((cell) => (
+                                            <TableCell key={cell.id} className="text-left">
+                                                {cell.column.id === "select" ? (
+                                                    <Checkbox
+                                                        checked={isSelected}
+                                                        onCheckedChange={(value) => onRowSelectionChange(row.original, Boolean(value))}
+                                                        aria-label="Select row"
+                                                        onChange={() => console.log("row original", row.original)}
+                                                    />
+                                                ) : (
+                                                    flexRender(cell.column.columnDef.cell, cell.getContext())
+                                                )}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                )
+                            })
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                    No results.
+                                </TableCell>
+                            </TableRow>
+                        )}
+                        {/* {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
                                 <TableRow
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
+                                    onClick={() => console.log("row original", row.original)}
                                 >
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id} className="text-left">
@@ -101,7 +140,7 @@ export function DataTable<TData, TValue>({
                                     No results.
                                 </TableCell>
                             </TableRow>
-                        )}
+                        )} */}
                     </TableBody>
                 </Table>
                 <div className="flex items-center justify-end space-x-2 py-4">
