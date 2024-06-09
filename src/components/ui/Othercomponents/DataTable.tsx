@@ -58,15 +58,10 @@ export function DataTable<TData, TValue>({
 
     return (
         <>
-            {table.getFilteredSelectedRowModel().rows.length} of{" "}
-            {table.getFilteredRowModel().rows.length} row(s) selected.
-            {
-                table.getFilteredSelectedRowModel().rows.length > 1
-                    ?
-                    <Button asChild variant="outline"><Link href="/comparison">Checkout</Link></Button>
-                    :
-                    <div>Click 2</div>
-            }
+            <div className="p-3">
+                {table.getFilteredSelectedRowModel().rows.length} of{" "}
+                {table.getFilteredRowModel().rows.length} row(s) selected.
+            </div>
             <div className="rounded-md border ">
                 <Table>
                     <TableHeader>
@@ -103,7 +98,6 @@ export function DataTable<TData, TValue>({
                                                         checked={isSelected}
                                                         onCheckedChange={(value) => onRowSelectionChange(row.original, Boolean(value))}
                                                         aria-label="Select row"
-                                                        onChange={() => console.log("row original", row.original)}
                                                     />
                                                 ) : (
                                                     flexRender(cell.column.columnDef.cell, cell.getContext())
