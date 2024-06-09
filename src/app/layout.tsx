@@ -9,6 +9,7 @@ import Navbar from "../components/ui/Othercomponents/Navbar";
 import SessionProvider from "../components/ui/Othercomponents/SessionProvider";
 import { ThemeProvider } from "~/components/ui/theme-provider";
 import { ModeToggle } from "~/components/ui/mode-toggle";
+import { AppWrapper } from "~/context";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -37,9 +38,11 @@ export default async function RootLayout({
           disableTransitionOnChange>
           <SessionProvider session={session}>
             <TRPCReactProvider>
-              <Navbar />
-              <ModeToggle />
-              {children}
+              <AppWrapper>
+                <Navbar />
+                <ModeToggle />
+                {children}
+              </AppWrapper>
             </TRPCReactProvider>
           </SessionProvider>
         </ThemeProvider>

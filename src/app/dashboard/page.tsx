@@ -1,10 +1,15 @@
-"use client"
+"use client";
 
 import { useEffect, useState } from 'react';
 import MaxWidthWrapper from '~/components/ui/Othercomponents/MaxWidthWrapper';
 import { DataTable } from '~/components/ui/Othercomponents/DataTable';
 import { type Payment, columns } from './data';
 import { Progress } from '~/components/ui/progress';
+import { Button } from '~/components/ui/button';
+import Link from "next/link";
+import { useRouter } from 'next/navigation';
+import { useAppContext } from '~/context';
+
 
 interface ApiResponse {
     data: Payment[]
@@ -24,7 +29,13 @@ async function getData(): Promise<Payment[]> {
         console.log("response from server", (result as ApiResponse).data)
 
         if (result && typeof result === 'object' && 'data' in result && Array.isArray((result as ApiResponse).data)) {
-            const data: Payment[] = (result as ApiResponse).data;
+            const data: Payment[] = (result as ApiResponse).data.map((item, index) => ({
+                id: item.id ?? index.toString(),
+                title: item.title,
+                description: item.description,
+                sale_amount: item.sale_amount,
+                project_link: item.project_link
+            }));
             // eslint-disable-next-line @typescript-eslint/no-empty-function
 
             return data
@@ -42,6 +53,24 @@ async function getData(): Promise<Payment[]> {
 const Dashboard = () => {
     const [data, setData] = useState<Payment[]>([]);
     const [loading, setLoading] = useState<boolean>(true); // State to track loading status
+    const [selectedRows, setSelectedRows] = useState<Payment[]>([]);
+    const router = useRouter();
+    // const { selectedRows, setSelectedRows } = useAppContext();
+
+
+
+    const handleRowSelection = (payment: Payment, isSelected: boolean) => {
+        setSelectedRows(prev =>
+            isSelected ? [...prev, payment] : prev.filter(p => p !== payment)
+        );
+    };
+
+    const handleCheckout = () => {
+        if (typeof window !== "undefined") {
+            const serializedData = encodeURIComponent(JSON.stringify(selectedRows));
+            router.push(`/comparison`);
+        }
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -61,32 +90,16 @@ const Dashboard = () => {
         fetchData()
     }, []);
 
-    // useEffect(() => {
-    //     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    //     const intervalId = setInterval(async () => {
-    //         if (data.length === 0) {
-    //             try {
-    //                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-    //                 if (data.length > 0) {
-    //                     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    //                     // setData(newData);
-    //                     clearInterval(intervalId); // Stop fetching once data is received
-    //                 }
-    //             } catch (error) {
-    //                 console.error("Error fetching data:", error);
-    //             }
-    //         }
-    //     }, 5000); // Fetch data every 5 seconds
-
-    //     return () => clearInterval(intervalId); // Cleanup on component unmount
-    // }, [data]); // Run whenever data changes
-
+    console.log("selected rows dashboard", selectedRows)
 
 
     return (
         <>
             <MaxWidthWrapper className="mb-12 mt-28 sm:mt-40 flex flex-col items-center justify-center text-center">
-                {!loading && data?.length > 0 && <DataTable columns={columns} data={data} />}
+                {
+                    selectedRows.length > 1 ? <Button variant='outline' onClick={handleCheckout}>Checkout</Button> : data?.length > 0 ? <div>Check 2 rows</div> : null
+                }
+                {!loading && data?.length > 0 && <DataTable columns={columns} data={data} selectedRows={selectedRows} onRowSelectionChange={handleRowSelection} />}
                 {loading && data?.length === 0 && <Progress value={50} />}
             </MaxWidthWrapper>
         </>
