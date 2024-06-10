@@ -1,9 +1,7 @@
 import "~/styles/globals.css";
 import { cn } from "../lib/utils"
-
 import { Inter } from "next/font/google";
 import { getServerSession } from "next-auth";
-
 import { TRPCReactProvider } from "~/trpc/react";
 import Navbar from "../components/ui/Othercomponents/Navbar";
 import SessionProvider from "../components/ui/Othercomponents/SessionProvider";
@@ -28,6 +26,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession();
+
   return (
     <html lang="en" className="light">
       <body className={cn('min-h-screen font-sans antialiased grainy', inter.className)}>

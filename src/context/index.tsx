@@ -1,11 +1,11 @@
 "use client";
 
-import { createContext, useState, useContext, ReactNode, FC } from "react";
+import { createContext, useState, useContext, ReactNode, Dispatch, SetStateAction } from "react";
 import { Payment } from "~/app/dashboard/data";
 
 interface AppContextType {
-    selectedRows: Payment[];
-    setSelectedRows: React.Dispatch<React.SetStateAction<Payment[]>>;
+    nameContext: Payment[];
+    setNameContext: Dispatch<SetStateAction<Payment[]>>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -14,16 +14,22 @@ interface AppWrapperProps {
     children: ReactNode;
 }
 
-export const AppWrapper: FC<AppWrapperProps> = ({ children }) => {
-    const [selectedRows, setSelectedRows] = useState<Payment[]>([]);
+export const AppWrapper = ({ children }: AppWrapperProps) => {
+    const [nameContext, setNameContext] = useState<Payment[]>([]); // Initialize as an empty array
 
     return (
-        <AppContext.Provider value={{ selectedRows, setSelectedRows }}>
+        <AppContext.Provider value={{ nameContext, setNameContext }}>
             {children}
         </AppContext.Provider>
     );
 };
 
 export function useAppContext() {
-    return useContext(AppContext)
+    const context = useContext(AppContext);
+    if (context === undefined) {
+        throw new Error("useAppContext must be used within an AppWrapper");
+    }
+    return context;
 }
+
+export default AppContext;

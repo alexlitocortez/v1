@@ -6,11 +6,6 @@ import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
 import { Mutation, Query, useMutation, useQuery } from "@tanstack/react-query"
 import { api } from "~/trpc/react"
-import { useRouter } from "next/router"
-import { PrismaClient } from "@prisma/client"
-
-const prisma = new PrismaClient()
-
 
 export const RegisterForm = () => {
     const [email, setEmail] = useState('')

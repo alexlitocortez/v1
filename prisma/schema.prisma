@@ -61,3 +61,11 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+
+model Data {
+    title        String
+    description  String @unique
+    sale_amount  String
+    project_link String @unique
+    id           Int    @id @default(autoincrement())
+}

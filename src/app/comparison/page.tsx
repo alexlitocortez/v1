@@ -1,18 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from 'next/navigation';
-import { Payment } from '~/app/dashboard/data';
-
+import { useAppContext } from '~/context'; // Import the custom hook
 
 const Comparison = () => {
-    const [selectedRows, setSelectedRows] = useState<Payment[]>([]);
+    const { nameContext, setNameContext } = useAppContext();
 
     useEffect(() => {
-        "hi"
+        console.log("name context", nameContext)
     }, []);
 
-    return "hi"
+    return (
+        <div>
+            {nameContext.map((item) => (
+                <div key={item.id}>
+                    {item.description}
+                </div>
+            ))}
+        </div>
+    )
 }
 
 export default Comparison
