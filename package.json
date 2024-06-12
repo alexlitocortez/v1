@@ -46,6 +46,7 @@
     "next-themes": "^0.3.0",
     "puppeteer": "^22.8.0",
     "react": "18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "18.2.0",
     "react-query": "^3.39.3",
     "server-only": "^0.0.1",

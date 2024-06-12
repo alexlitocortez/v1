@@ -8,15 +8,13 @@ import { Progress } from '~/components/ui/progress';
 import { Button } from '~/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { useAppContext } from '~/context';
-import { PrismaClient } from "@prisma/client";
-
 
 interface ApiResponse {
     data: Payment[]
-    result: Payment[]
+    salesAmount: number[]
 }
 
-async function getData(): Promise<Payment[]> {
+async function getData(): Promise<ApiResponse> {
     try {
         const res = await fetch('/api/hello', {
             method: 'POST',
@@ -24,9 +22,11 @@ async function getData(): Promise<Payment[]> {
         })
 
         // Handle response if necessary
-        const result: unknown = await res.json();
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const result = await res.json();
 
         console.log("response from server", (result as ApiResponse).data)
+        console.log("sales amount context", (result as ApiResponse).salesAmount)
 
         if (result && typeof result === 'object' && 'data' in result && Array.isArray((result as ApiResponse).data)) {
             const data: Payment[] = (result as ApiResponse).data.map((item, index) => ({
@@ -38,24 +38,24 @@ async function getData(): Promise<Payment[]> {
             }));
             // eslint-disable-next-line @typescript-eslint/no-empty-function
 
-            return data
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+            return { data, salesAmount: result.sale_amount };
         } else {
             console.error('Invalid response format:', result);
-            return [];
+            return { data: [], salesAmount: [] };
         }
     } catch (error) {
         console.error(error)
-        return []
+        return { data: [], salesAmount: [] };
     }
 }
-
 
 const Dashboard = () => {
     const [data, setData] = useState<Payment[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    // const [selectedRows, setSelectedRows] = useState<Payment[]>([]);
     const router = useRouter();
     const { nameContext, setNameContext } = useAppContext();
+    const { salesAmountContext, setSalesAmountContext } = useAppContext();
 
     const handleRowSelection = (payment: Payment, isSelected: boolean) => {
         setNameContext(prev =>
@@ -65,7 +65,6 @@ const Dashboard = () => {
 
     const handleCheckout = () => {
         if (typeof window !== "undefined") {
-            // const serializedData = encodeURIComponent(JSON.stringify(selectedRows));
             router.push(`/comparison`);
         }
     };
@@ -75,7 +74,8 @@ const Dashboard = () => {
             try {
                 const response = await getData();
                 if (response) {
-                    setData(response)
+                    setData(response.data)
+                    setSalesAmountContext(response.salesAmount)
                     setLoading(false)
                 } else {
                     return
@@ -88,8 +88,7 @@ const Dashboard = () => {
         fetchData()
     }, []);
 
-    console.log("selected rows dashboard", nameContext)
-
+    console.log("sales amount", salesAmountContext)
 
     return (
         <>

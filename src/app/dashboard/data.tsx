@@ -6,7 +6,7 @@ export type Payment = {
     description: string
     sale_amount: string
     project_link: string
-    id: string
+    id: number
 }
 
 export const columns: ColumnDef<Payment>[] =
@@ -26,7 +26,7 @@ export const columns: ColumnDef<Payment>[] =
         },
         {
             accessorKey: "title",
-            header: "Title",
+            header: "Title"
         },
         {
             accessorKey: "description",

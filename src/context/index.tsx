@@ -6,6 +6,8 @@ import { Payment } from "~/app/dashboard/data";
 interface AppContextType {
     nameContext: Payment[];
     setNameContext: Dispatch<SetStateAction<Payment[]>>;
+    salesAmountContext: number[];
+    setSalesAmountContext: Dispatch<SetStateAction<number[]>>
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -16,9 +18,10 @@ interface AppWrapperProps {
 
 export const AppWrapper = ({ children }: AppWrapperProps) => {
     const [nameContext, setNameContext] = useState<Payment[]>([]); // Initialize as an empty array
+    const [salesAmountContext, setSalesAmountContext] = useState<number[]>([]); // Initialize as an empty array
 
     return (
-        <AppContext.Provider value={{ nameContext, setNameContext }}>
+        <AppContext.Provider value={{ nameContext, setNameContext, salesAmountContext, setSalesAmountContext }}>
             {children}
         </AppContext.Provider>
     );

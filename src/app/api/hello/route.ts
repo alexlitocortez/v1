@@ -2,7 +2,7 @@ import { type NextApiRequest, type NextApiResponse } from 'next';
 import { NextResponse, NextRequest } from 'next/server'
 import axios from 'axios';
 import puppeteer, { Page } from 'puppeteer';
-import { any, array, string } from 'zod';
+import { any, array, record, string } from 'zod';
 import { time } from 'console';
 import { request } from 'http';
 import { PrismaClient } from '@prisma/client';
@@ -98,14 +98,39 @@ async function createDataRecords() {
     })
 }
 
+async function extractNumber(string: string) {
+    const numericString = string.replace(/[^0-9]/g, '');
+    const number = numericString ? parseInt(numericString) : null;
+    return number;
+}
+
+async function processRecords(records: Payment[]): Promise<number[]> {
+    // Define an external array to store all values
+    const allNumbers: number[] = [];
+
+    // Process each record asynchronously
+    const promises = records.map(async (item) => {
+        const number = await extractNumber(item.sale_amount);
+        if (number !== null) {
+            allNumbers.push(number);
+        }
+    });
+
+    await Promise.all(promises);
+
+    return allNumbers;
+}
+
 
 export async function POST(req: Request) {
-    await createDataRecords()
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    const fetchedRecords = await prisma.data.findMany()
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    console.log("fetched records", fetchedRecords)
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    return NextResponse.json({ data: fetchedRecords })
+    // await createDataRecords();
+    const fetchedRecords: Payment[] = await prisma.data.findMany();
+    if (!Array.isArray(fetchedRecords)) {
+        throw new Error("Fetched records is not an array");
+    }
+
+    const allNumbers = await processRecords(fetchedRecords)
+
+    return NextResponse.json({ data: fetchedRecords, sale_amount: allNumbers })
 }
 

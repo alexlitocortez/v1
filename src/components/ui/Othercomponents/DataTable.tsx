@@ -9,6 +9,8 @@ import {
     getCoreRowModel,
     useReactTable,
     getPaginationRowModel,
+    SortingState,
+    getSortedRowModel
 } from "@tanstack/react-table";
 
 import {
@@ -44,19 +46,19 @@ export function DataTable<TData, TValue>({
     onRowSelectionChange
 }: DataTableProps<TData, TValue>) {
     const [rowSelection, setRowSelection] = useState({})
+    const [sorting, setSorting] = useState<SortingState>([])
     const table = useReactTable<Payment>({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         onRowSelectionChange: setRowSelection,
+        onSortingChange: setSorting,
+        getSortedRowModel: getSortedRowModel(),
         state: {
-            rowSelection
+            rowSelection,
         },
     })
-
-    // console.log("selected rows", selectedRows)
-
 
     return (
         <>
