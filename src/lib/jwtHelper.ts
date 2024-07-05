@@ -20,31 +20,5 @@ export default async function handler(req: any, res: { end: () => void }) {
     res.end()
 }
 
-// const createJWT = (authUser: AuthUser, duration: number) => {
-//     const secret = process.env.JWT_SECRET
-//     if (!secret) {
-//         throw new Error("JWT_SECRET is not defined in environment variables.")
-//     }
 
-//     const jwtPayload: JWT = {
-//         user: authUser as User,
-//         accessToken: "", // Fill these values accordingly
-//         refreshToken: "",
-//         accessTokenExpired: 0,
-//         refreshTokenExpired: 0
-//     }
-//     return encode({ token: jwtPayload, secret, maxAge: duration })
-// }
-
-// export const jwtHelper = {
-//     createAcessToken: (token: AuthUser) => createJWT(token, tokenOneDay),
-//     createRefreshToken: (token: AuthUser) => createJWT(token, tokenOnWeek),
-//     verifyToken: (token: string) => {
-//         const secret = process.env.JWT_SECRET
-//         if (!secret) {
-//             throw new Error("JWT_SECRET is not defined in environment variables.")
-//         }
-//         return decode({ token, secret })
-//     }
-// }
 

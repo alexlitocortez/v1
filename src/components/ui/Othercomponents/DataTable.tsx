@@ -9,6 +9,8 @@ import {
     getCoreRowModel,
     useReactTable,
     getPaginationRowModel,
+    SortingState,
+    getSortedRowModel
 } from "@tanstack/react-table";
 
 import {
@@ -25,35 +27,42 @@ import { Payment } from "~/app/dashboard/data";
 import { Checkbox } from "../checkbox";
 import { boolean } from "zod";
 
+import { useAppContext } from '~/context';
+
+
 
 interface DataTableProps<TData, TValue> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     columns: ColumnDef<Payment, any>[];
     data: Payment[];
-    selectedRows: Payment[];
+    // selectedRows: Payment[];
     onRowSelectionChange: (payment: Payment, isSelected: boolean) => void;
+    nameContext: Payment[];
 }
 
 
 export function DataTable<TData, TValue>({
     columns,
     data,
-    selectedRows,
+    nameContext,
+    // selectedRows,
     onRowSelectionChange
 }: DataTableProps<TData, TValue>) {
     const [rowSelection, setRowSelection] = useState({})
+    const [sorting, setSorting] = useState<SortingState>([])
+    const { rowAmountContext, setRowAmountContext } = useAppContext();
     const table = useReactTable<Payment>({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         onRowSelectionChange: setRowSelection,
+        onSortingChange: setSorting,
+        getSortedRowModel: getSortedRowModel(),
         state: {
-            rowSelection
+            rowSelection,
         },
     })
-
-    console.log("selected rows", selectedRows)
 
 
     return (
@@ -85,7 +94,7 @@ export function DataTable<TData, TValue>({
                     <TableBody>
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => {
-                                const isSelected = selectedRows.some(payment => payment.id === row.original.id);
+                                const isSelected = nameContext.some(payment => payment.id === row.original.id);
                                 return (
                                     <TableRow
                                         key={row.id}
@@ -114,27 +123,6 @@ export function DataTable<TData, TValue>({
                                 </TableCell>
                             </TableRow>
                         )}
-                        {/* {table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    data-state={row.getIsSelected() && "selected"}
-                                    onClick={() => console.log("row original", row.original)}
-                                >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id} className="text-left">
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    No results.
-                                </TableCell>
-                            </TableRow>
-                        )} */}
                     </TableBody>
                 </Table>
                 <div className="flex items-center justify-end space-x-2 py-4">

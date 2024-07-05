@@ -6,17 +6,15 @@ import { DataTable } from '~/components/ui/Othercomponents/DataTable';
 import { type Payment, columns } from './data';
 import { Progress } from '~/components/ui/progress';
 import { Button } from '~/components/ui/button';
-import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import { useAppContext } from '~/context';
 
-
 interface ApiResponse {
     data: Payment[]
-    result: Payment[]
+    salesAmount: number[]
 }
 
-async function getData(): Promise<Payment[]> {
+async function getData(): Promise<ApiResponse> {
     try {
         const res = await fetch('/api/hello', {
             method: 'POST',
@@ -24,9 +22,11 @@ async function getData(): Promise<Payment[]> {
         })
 
         // Handle response if necessary
-        const result: unknown = await res.json();
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const result = await res.json();
 
         console.log("response from server", (result as ApiResponse).data)
+        console.log("sales amount context", (result as ApiResponse).salesAmount)
 
         if (result && typeof result === 'object' && 'data' in result && Array.isArray((result as ApiResponse).data)) {
             const data: Payment[] = (result as ApiResponse).data.map((item, index) => ({
@@ -38,36 +38,33 @@ async function getData(): Promise<Payment[]> {
             }));
             // eslint-disable-next-line @typescript-eslint/no-empty-function
 
-            return data
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+            return { data, salesAmount: result.sale_amount };
         } else {
             console.error('Invalid response format:', result);
-            return [];
+            return { data: [], salesAmount: [] };
         }
     } catch (error) {
         console.error(error)
-        return []
+        return { data: [], salesAmount: [] };
     }
 }
 
-
 const Dashboard = () => {
     const [data, setData] = useState<Payment[]>([]);
-    const [loading, setLoading] = useState<boolean>(true); // State to track loading status
-    const [selectedRows, setSelectedRows] = useState<Payment[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
     const router = useRouter();
-    // const { selectedRows, setSelectedRows } = useAppContext();
-
-
+    const { nameContext, setNameContext } = useAppContext();
+    const { salesAmountContext, setSalesAmountContext } = useAppContext();
 
     const handleRowSelection = (payment: Payment, isSelected: boolean) => {
-        setSelectedRows(prev =>
+        setNameContext(prev =>
             isSelected ? [...prev, payment] : prev.filter(p => p !== payment)
         );
     };
 
     const handleCheckout = () => {
         if (typeof window !== "undefined") {
-            const serializedData = encodeURIComponent(JSON.stringify(selectedRows));
             router.push(`/comparison`);
         }
     };
@@ -77,7 +74,8 @@ const Dashboard = () => {
             try {
                 const response = await getData();
                 if (response) {
-                    setData(response)
+                    setData(response.data)
+                    setSalesAmountContext(response.salesAmount)
                     setLoading(false)
                 } else {
                     return
@@ -90,16 +88,16 @@ const Dashboard = () => {
         fetchData()
     }, []);
 
-    console.log("selected rows dashboard", selectedRows)
+    console.log("name context", nameContext)
 
 
     return (
         <>
             <MaxWidthWrapper className="mb-12 mt-28 sm:mt-40 flex flex-col items-center justify-center text-center">
                 {
-                    selectedRows.length > 1 ? <Button variant='outline' onClick={handleCheckout}>Checkout</Button> : data?.length > 0 ? <div>Check 2 rows</div> : null
+                    nameContext?.length > 1 ? <Button variant='outline' onClick={handleCheckout}>Checkout</Button> : data?.length > 0 ? <div>Check 2 rows</div> : null
                 }
-                {!loading && data?.length > 0 && <DataTable columns={columns} data={data} selectedRows={selectedRows} onRowSelectionChange={handleRowSelection} />}
+                {!loading && data?.length > 0 && <DataTable columns={columns} data={data} nameContext={nameContext} onRowSelectionChange={handleRowSelection} />}
                 {loading && data?.length === 0 && <Progress value={50} />}
             </MaxWidthWrapper>
         </>
