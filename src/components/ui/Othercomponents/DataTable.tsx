@@ -27,6 +27,9 @@ import { Payment } from "~/app/dashboard/data";
 import { Checkbox } from "../checkbox";
 import { boolean } from "zod";
 
+import { useAppContext } from '~/context';
+
+
 
 interface DataTableProps<TData, TValue> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -47,6 +50,7 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
     const [rowSelection, setRowSelection] = useState({})
     const [sorting, setSorting] = useState<SortingState>([])
+    const { rowAmountContext, setRowAmountContext } = useAppContext();
     const table = useReactTable<Payment>({
         data,
         columns,
@@ -59,6 +63,7 @@ export function DataTable<TData, TValue>({
             rowSelection,
         },
     })
+
 
     return (
         <>

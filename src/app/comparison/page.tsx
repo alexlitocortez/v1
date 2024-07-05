@@ -12,15 +12,26 @@ import {
     CardHeader,
     CardTitle,
 } from "~/components/ui/card";
-import { useAppContext } from '~/context'; // Import the custom hook
+import LineChart from "~/components/ui/linechart";
+import { useAppContext } from '~/context';
 
 
 const Comparison = () => {
     const { nameContext, setNameContext } = useAppContext();
     const { salesAmountContext, setSalesAmountContext } = useAppContext();
 
+    const getAverage = () => {
+        if (salesAmountContext.length === 0) {
+            return '';
+        }
+        const sum = salesAmountContext.reduce((acc, currentValue) => acc + currentValue, 0);
+        const average = (sum / salesAmountContext.length).toFixed(2);
+        return average;
+    };
+
+
     useEffect(() => {
-        console.log("name context", nameContext)
+        console.log("name context avg", getAverage())
     }, []);
 
     return (
@@ -40,15 +51,13 @@ const Comparison = () => {
                         <CardDescription>{item.description}</CardDescription>
                     </Card>
                 ))}
-                {salesAmountContext.map((item) => (
-                    <ul key={item}>
-                        <li>{item}</li>
-                    </ul>
-                ))}
+                <div>
+                    <LineChart />
+                </div>
+                <h1 className="font-bold">Average Price of Side Hustle: ${getAverage()}</h1>
             </MaxWidthWrapper>
         </>
     )
 }
 
 export default Comparison
-

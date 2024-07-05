@@ -88,7 +88,8 @@ const Dashboard = () => {
         fetchData()
     }, []);
 
-    console.log("sales amount", salesAmountContext)
+    console.log("name context", nameContext)
+
 
     return (
         <>

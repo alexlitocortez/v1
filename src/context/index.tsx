@@ -8,6 +8,8 @@ interface AppContextType {
     setNameContext: Dispatch<SetStateAction<Payment[]>>;
     salesAmountContext: number[];
     setSalesAmountContext: Dispatch<SetStateAction<number[]>>
+    rowAmountContext: number[];
+    setRowAmountContext: Dispatch<SetStateAction<number[]>>
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -19,9 +21,10 @@ interface AppWrapperProps {
 export const AppWrapper = ({ children }: AppWrapperProps) => {
     const [nameContext, setNameContext] = useState<Payment[]>([]); // Initialize as an empty array
     const [salesAmountContext, setSalesAmountContext] = useState<number[]>([]); // Initialize as an empty array
+    const [rowAmountContext, setRowAmountContext] = useState<number[]>([]); // Initialize as an empty array
 
     return (
-        <AppContext.Provider value={{ nameContext, setNameContext, salesAmountContext, setSalesAmountContext }}>
+        <AppContext.Provider value={{ nameContext, setNameContext, salesAmountContext, setSalesAmountContext, rowAmountContext, setRowAmountContext }}>
             {children}
         </AppContext.Provider>
     );
