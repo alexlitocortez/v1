@@ -10,12 +10,10 @@ const nextConfig = {
     reactStrictMode: true,
     experimental: {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        serverActions: true,
         serverComponentsExternalPackages: ['@prisma/client', 'bcrypt']
     },
     env: {
-        NEXT_PUBLIC_API_URL: env.NEXT_PUBLIC_API_URL
+        NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL
     }
 };
 
