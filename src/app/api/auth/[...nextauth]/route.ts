@@ -1,16 +1,12 @@
-import NextAuth, { Awaitable, RequestInternal, User, type NextAuthOptions } from "next-auth"
-import GitHubProvider from "next-auth/providers/github"
+import NextAuth, { type NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import { OAuthConfig, OAuthUserConfig } from "next-auth/providers/oauth";
-import bcrypt, { compare } from 'bcrypt'
-import { PrismaClient } from "@prisma/client";
+import bcrypt from 'bcrypt'
 import { prisma } from "~/lib/prisma";
 import { PrismaAdapter } from "@auth/prisma-adapter"
-import { JWT } from "next-auth/jwt";
 import { Adapter } from "next-auth/adapters";
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
     session: {
         strategy: 'jwt'
     },
@@ -75,8 +71,7 @@ export const authOptions: NextAuthOptions = {
     },
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-export const handler = NextAuth(authOptions);
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST }
 
