@@ -3,7 +3,8 @@
  * for Docker builds.
  */
 
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+// @ts-ignore
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
 /** @type {import("next").NextConfig} */
 const nextConfig = {
