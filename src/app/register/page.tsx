@@ -1,9 +1,7 @@
-"use client"
+"use client";
 
 import Link from "next/link"
 import { RegisterForm } from "./form"
-import { useQuery } from "@tanstack/react-query"
-import { api } from "~/trpc/react"
 
 const Register = () => {
     return (

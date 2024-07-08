@@ -55,7 +55,7 @@ const Dashboard = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const router = useRouter();
     const { nameContext, setNameContext } = useAppContext();
-    const { salesAmountContext, setSalesAmountContext } = useAppContext();
+    const { setSalesAmountContext } = useAppContext();
 
     const handleRowSelection = (payment: Payment, isSelected: boolean) => {
         setNameContext(prev =>
@@ -87,9 +87,6 @@ const Dashboard = () => {
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         fetchData()
     }, []);
-
-    console.log("name context", nameContext)
-
 
     return (
         <>

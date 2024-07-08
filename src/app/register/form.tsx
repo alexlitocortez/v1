@@ -1,10 +1,9 @@
-"use client"
+"use client";
 
 import { useState } from "react"
 import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
-import { Mutation, Query, useMutation, useQuery } from "@tanstack/react-query"
 import { api } from "~/trpc/react"
 
 export const RegisterForm = () => {

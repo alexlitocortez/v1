@@ -2,7 +2,7 @@ import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
 export const env = createEnv({
-  // @ts-ignore
+  // @ts-expect-error: Schema property does not match zod schema format
   schema: {
     NEXT_PUBLIC_API_URL: 'string',
     NEXT_PUBLIC_API_KEY: 'string'

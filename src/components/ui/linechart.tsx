@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
 import { useAppContext } from '~/context';
-import { Payment } from '~/app/dashboard/data';
-import { Item } from '@radix-ui/react-dropdown-menu';
 
 Chart.register(...registerables);
 
@@ -27,8 +25,7 @@ const LineChart = () => {
         datasets: []
     })
 
-    const { nameContext, setNameContext } = useAppContext();
-    const { salesAmountContext, setSalesAmountContext } = useAppContext();
+    const { nameContext } = useAppContext();
 
     const values = nameContext.map((item) => item.sale_amount)
     const replaceValues = values.map((item) => item.replace(/[^0-9]/g, ''))

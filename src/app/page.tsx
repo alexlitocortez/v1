@@ -1,7 +1,5 @@
 import Link from "next/link";
 
-import { CreatePost } from "~/components/ui/Othercomponents/create-post";
-import { api } from "~/trpc/server";
 import MaxWidthWrapper from "../components/ui/Othercomponents/MaxWidthWrapper";
 import { ArrowRight } from "lucide-react";
 import { buttonVariants } from "~/components/ui/button";
