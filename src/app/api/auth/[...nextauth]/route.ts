@@ -1,18 +1,21 @@
-import NextAuth, { Awaitable, RequestInternal, User, type NextAuthOptions } from "next-auth"
-import GitHubProvider from "next-auth/providers/github"
+import NextAuth, { type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import { OAuthConfig, OAuthUserConfig } from "next-auth/providers/oauth";
-import bcrypt, { compare } from 'bcrypt'
-import { PrismaClient } from "@prisma/client";
+import bcrypt from 'bcrypt';
 import { prisma } from "~/lib/prisma";
-import { PrismaAdapter } from "@auth/prisma-adapter"
-import { JWT } from "next-auth/jwt";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import { Adapter } from "next-auth/adapters";
+import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from "next/server";
 
-export const authOptions: NextAuthOptions = {
+interface Credentials {
+    email: string;
+    password: string;
+}
+
+const authOptions: NextAuthOptions = {
     session: {
-        strategy: 'jwt'
+        strategy: 'jwt',
     },
     secret: process.env.NEXTAUTH_SECRET,
     adapter: PrismaAdapter(prisma) as Adapter,
@@ -21,62 +24,56 @@ export const authOptions: NextAuthOptions = {
             name: 'Sign in',
             credentials: {
                 email: { label: "Email", type: "email", placeholder: 'hello@example.com' },
-                password: { label: "Password", type: "password" }
+                password: { label: "Password", type: "password" },
             },
-            async authorize(credentials, req) {
+            async authorize(credentials: Credentials | undefined) {
                 if (!credentials?.password) {
                     return null;
                 }
 
-                const hashedPassword: string = bcrypt.hashSync(credentials?.password, 10)
-                const userCredentials = {
-                    email: credentials?.email,
-                    password: hashedPassword
-                };
-
                 const user = await prisma.user.findUnique({
                     where: {
-                        email: userCredentials?.email
-                    }
-                })
+                        email: credentials.email,
+                    },
+                });
 
-                // eslint-disable-next-line @typescript-eslint/no-misused-promises, @typescript-eslint/no-unsafe-argument
-                if (!user || !(await bcrypt.compare(credentials?.password, userCredentials?.password))) {
-                    return null
+                if (!user || !bcrypt.compareSync(credentials.password, user.password ?? "")) {
+                    return null;
                 }
 
                 return {
-                    id: user?.id,
-                    email: user?.email
-                }
+                    id: user.id,
+                    email: user.email,
+                };
             },
         }),
         GoogleProvider({
             clientId: process.env.GOOGLE_ID ?? "",
-            clientSecret: process.env.GOOGLE_SECRET ?? ""
+            clientSecret: process.env.GOOGLE_SECRET ?? "",
         }),
     ],
     callbacks: {
-        async jwt({ token, user, session, account }) {
+        async jwt({ token, user }) {
             if (user) {
                 return {
                     ...token,
                     email: user.email,
-                }
+                };
             }
-            return token
+            return token;
         },
-        async session({ session, token, user }) {
-            return session
-        }
+        async session({ session }) {
+            return session;
+        },
     },
     pages: {
         signIn: "/login",
     },
-}
+};
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-export const handler = NextAuth(authOptions);
+// const handler = async (req: NextRequest, res: NextResponse) => {
+//     const nextAuthHandler = NextAuth(authOptions);
+//     return await nextAuthHandler(req as unknown as NextApiRequest, res as unknown as NextApiResponse);
+// };
 
-export { handler as GET, handler as POST }
-
+// export { handler as GET, handler as POST };

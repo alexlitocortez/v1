@@ -1,8 +1,8 @@
 "use server";
 
-import puppeteer from 'puppeteer'
+import puppeteer from 'puppeteer';
 
-export async function scrapeDownloads(url: string) {
+export async function scrapeDownloads() {
     const browser = await puppeteer.launch()
     const page = await browser.newPage()
 

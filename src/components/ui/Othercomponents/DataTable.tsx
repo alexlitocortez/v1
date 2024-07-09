@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 
 import {
     ColumnDef,
@@ -25,11 +24,6 @@ import {
 import { Button } from "../button";
 import { Payment } from "~/app/dashboard/data";
 import { Checkbox } from "../checkbox";
-import { boolean } from "zod";
-
-import { useAppContext } from '~/context';
-
-
 
 interface DataTableProps<TData, TValue> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -40,7 +34,6 @@ interface DataTableProps<TData, TValue> {
     nameContext: Payment[];
 }
 
-
 export function DataTable<TData, TValue>({
     columns,
     data,
@@ -50,7 +43,6 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
     const [rowSelection, setRowSelection] = useState({})
     const [sorting, setSorting] = useState<SortingState>([])
-    const { rowAmountContext, setRowAmountContext } = useAppContext();
     const table = useReactTable<Payment>({
         data,
         columns,

@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
@@ -10,12 +10,6 @@ import GoogleIcon from '@mui/icons-material/Google';
 export const LoginForm = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [emailInPutError, setEmailInputError] = useState(false);
-    const [passwordInPutError, setPasswordInputError] = useState(false);
-    const formData = {
-        email: email,
-        password: password
-    }
 
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -34,7 +28,6 @@ export const LoginForm = () => {
         }
         return res;
     }
-
 
     return (
         <form

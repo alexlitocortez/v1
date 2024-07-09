@@ -1,15 +1,11 @@
 "use client";
 
-import { Item } from "@radix-ui/react-dropdown-menu";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import MaxWidthWrapper from "~/components/ui/Othercomponents/MaxWidthWrapper";
 import {
     Card,
     CardContent,
     CardDescription,
-    CardFooter,
-    CardHeader,
     CardTitle,
 } from "~/components/ui/card";
 import LineChart from "~/components/ui/linechart";
@@ -17,8 +13,8 @@ import { useAppContext } from '~/context';
 
 
 const Comparison = () => {
-    const { nameContext, setNameContext } = useAppContext();
-    const { salesAmountContext, setSalesAmountContext } = useAppContext();
+    const { nameContext } = useAppContext();
+    const { salesAmountContext } = useAppContext();
 
     const getAverage = () => {
         if (salesAmountContext.length === 0) {
@@ -28,11 +24,6 @@ const Comparison = () => {
         const average = (sum / salesAmountContext.length).toFixed(2);
         return average;
     };
-
-
-    useEffect(() => {
-        console.log("name context avg", getAverage())
-    }, []);
 
     return (
         <>

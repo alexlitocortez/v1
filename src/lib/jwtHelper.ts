@@ -1,5 +1,3 @@
-import { encode, decode } from "next-auth/jwt"
-import { JWT } from "next-auth/jwt"
 import { User } from "@prisma/client"
 import { getToken } from "next-auth/jwt"
 

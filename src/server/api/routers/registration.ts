@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { NextResponse } from "next/server";
-import { number, z } from "zod";
+import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import bcrypt from "bcrypt"
 

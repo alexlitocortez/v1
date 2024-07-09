@@ -1,8 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../trpc";
-import { PrismaClient, Prisma } from "@prisma/client";
-import { sign } from "crypto";
-import { getToken } from "next-auth/jwt";
+import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 const LoginInput = z.object({
