@@ -18,7 +18,7 @@ async function getData(): Promise<ApiResponse> {
     try {
         const res = await fetch('/api/hello', {
             method: 'POST',
-            body: JSON.stringify('https://www.sideprojectors.com/#/')
+            // body: JSON.stringify('https://www.sideprojectors.com/#/')
         })
 
         // Handle response if necessary
@@ -51,9 +51,9 @@ async function getData(): Promise<ApiResponse> {
 }
 
 const Dashboard = () => {
+    const router = useRouter();
     const [data, setData] = useState<Payment[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const router = useRouter();
     const { nameContext, setNameContext } = useAppContext();
     const { setSalesAmountContext } = useAppContext();
 

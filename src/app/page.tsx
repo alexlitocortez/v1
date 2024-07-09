@@ -9,14 +9,11 @@ export default async function Home() {
   return (
     <>
       <MaxWidthWrapper className="mb-12 mt-28 sm:mt-40 flex flex-col items-center justify-center text-center">
-        <div className="mx-auto mb-4 flex max-w-fit items-center justify-center space-x-2 overflow-hidden rounded-full border border-gray-200 bg-white px-7 py-2 shadow-md backdrop-blur transition-all hover:border-gray-300 hover:bg--white/50">
-          <p className="text-sm animate-in font-semibold text-gray-700">Quill is now public</p>
-        </div>
         <h1 className="max-w-4xl text-5xl font-bold md:text-6xl lg:text-7xl">
-          Chat with your <span className="text-blue-600">documents</span> in seconds.
+          Gather <span className="text-blue-600">side hustle ideas</span> in seconds.
         </h1>
         <p className="mt-5 max-w-prose text-zinc-700 sm:text-lg">
-          SAAS DESCRIPTION
+          Compare side hustle ideas with V1 and figure out what your next money-making idea is!
         </p>
         <Link className={buttonVariants({
           size: 'lg',
@@ -60,12 +57,6 @@ export default async function Home() {
       {/* Feature section */}
       <div className="mx-auto mb-32 mt-32 max-w-5xl sm:mt-56">
         <div className="mb-12 px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl sm:text-center">
-            <h2 className="mt-2 font-bold text-4xl text-gray-900 sm:text-5xl">Start chatting in minutes</h2>
-            <p className="mt-4 text-lg text-gray-600">
-              Chatting to your PDF files has never been easier than with Quill.
-            </p>
-          </div>
         </div>
         {/* steps */}
         <ol className="my-8 space-y-4 pt-8 md:flex md:space-x-12 md:space-y-0">
