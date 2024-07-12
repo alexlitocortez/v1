@@ -27,7 +27,6 @@ async function processRecords(records: Payment[]): Promise<number[]> {
     return allNumbers;
 }
 
-
 export async function POST() {
     // await createDataRecords();
     const fetchedRecords: Payment[] = await prisma.data.findMany();
@@ -40,3 +39,16 @@ export async function POST() {
     return NextResponse.json({ data: fetchedRecords, sale_amount: allNumbers })
 }
 
+
+// import { VercelRequest, VercelResponse } from '@vercel/node';
+// import { sql } from '@vercel/postgres';
+// import { NextResponse } from 'next/server';
+
+// export async function POST(request: VercelRequest, response: VercelResponse) {
+//     try {
+//         const result = await sql`CREATE TABLE Pets ( Name varchar(255), Owner varchar(255) );`;
+//         response.status(200).json({ result });
+//     } catch (error) {
+//         response.status(500).json({ error });
+//     }
+// }

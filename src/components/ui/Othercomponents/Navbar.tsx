@@ -37,11 +37,12 @@ const Navbar = () => {
                         <span>Pricing</span>
                     </Link>
                     {/* todo: add mobile navbar */}
-                    <div>
+
+                    {/* <div>
                         <>
                             <AuthButton />
                         </>
-                    </div>
+                    </div> */}
                 </div>
             </MaxWidthWrapper>
         </nav>
