@@ -18,7 +18,7 @@ async function getData(): Promise<ApiResponse> {
     try {
         const res = await fetch('/api/hello', {
             method: 'POST',
-            // body: JSON.stringify('https://www.sideprojectors.com/#/')
+            body: JSON.stringify('https://www.sideprojectors.com/#/')
         })
 
         // Handle response if necessary
