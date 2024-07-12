@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { Payment } from '~/app/dashboard/data';
 import puppeteer, { Page } from 'puppeteer';
 import { any, array, string } from 'zod';
+import chromium from 'chrome-aws-lambda';
 
 const prisma = new PrismaClient();
 
@@ -40,10 +41,15 @@ async function scrapePage() {
         },
     ]
 
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+        args: chromium.args,
+        executablePath: await chromium.executablePath,
+        headless: chromium.headless,
+    });
+
     const page = await browser.newPage();
     let saleAmountsData: string[] = []
-    const allData = []; // Array to hold data from all sites
+    const allData: ProjectData[] = []; // Array to hold data from all sites
 
     for (const site of sites) {
         const { url, selectors } = site;
@@ -95,12 +101,21 @@ async function scrapePage() {
     return allData
 }
 
-
-
-
 export async function POST(req: Request) {
-    const data = await scrapePage();
-    return NextResponse.json({ data: data })
+    try {
+        const data = await scrapePage();
+
+        const createdProjects = await prisma.data.createMany({
+            data: data
+        })
+
+        return NextResponse.json({ success: true, data: createdProjects });
+    } catch (error) {
+        console.error('Error scraping and storing data:', error);
+        return NextResponse.json({ success: false });
+    } finally {
+        await prisma.$disconnect();
+    }
 }
 
 
