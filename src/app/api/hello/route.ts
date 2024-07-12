@@ -30,7 +30,9 @@ async function processRecords(records: Payment[]): Promise<number[]> {
 
 export async function POST() {
     // await createDataRecords();
-    const fetchedRecords: Payment[] = await prisma.data.findMany();
+    const fetchedRecords: Payment[] = await prisma.data.findMany({
+        take: 20, // Limit to 20 rows
+    });
     if (!Array.isArray(fetchedRecords)) {
         throw new Error("Fetched records is not an array");
     }
