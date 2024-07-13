@@ -13,7 +13,7 @@ interface Credentials {
     password: string;
 }
 
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
     session: {
         strategy: 'jwt',
     },
