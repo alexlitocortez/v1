@@ -20,7 +20,7 @@ async function getData(): Promise<ApiResponse> {
             method: 'GET',
         })
 
-        const result = await res.json();
+        const result: unknown = await res.json();
 
         console.log("response from server", (result as ApiResponse).data)
 
@@ -75,7 +75,9 @@ const Dashboard = () => {
                 setLoading(false);
             }
         }
-        fetchData();
+        fetchData().catch((error) => {
+            console.error("Error during fetchData:", error);
+        });
     }, [setSalesAmountContext]);
 
     return (
