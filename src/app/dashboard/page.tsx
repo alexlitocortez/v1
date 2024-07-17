@@ -17,33 +17,27 @@ interface ApiResponse {
 async function getData(): Promise<ApiResponse> {
     try {
         const res = await fetch('/api/hello', {
-            method: 'POST',
-            body: JSON.stringify('https://www.sideprojectors.com/#/')
+            method: 'GET',
         })
 
-        // Handle response if necessary
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const result = await res.json();
 
         console.log("response from server", (result as ApiResponse).data)
-        console.log("sales amount context", (result as ApiResponse).salesAmount)
 
-        if (result && typeof result === 'object' && 'data' in result && Array.isArray((result as ApiResponse).data)) {
-            const data: Payment[] = (result as ApiResponse).data.map((item, index) => ({
-                id: item.id ?? index.toString(),
-                title: item.title,
-                description: item.description,
-                sale_amount: item.sale_amount,
-                project_link: item.project_link
-            }));
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
+        // if (result && typeof result === 'object' && 'data' in result && Array.isArray((result as ApiResponse).data)) {
+        const data: Payment[] = (result as ApiResponse).data.map((item, index) => ({
+            id: item.id ?? index.toString(),
+            title: item.title,
+            description: item.description,
+            sale_amount: item.sale_amount,
+            project_link: item.project_link
+        }));
 
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-            return { data, salesAmount: result.sale_amount };
-        } else {
-            console.error('Invalid response format:', result);
-            return { data: [], salesAmount: [] };
-        }
+        return { data, salesAmount: (result as ApiResponse).salesAmount };
+        // } else {
+        //     console.error('Invalid response format:', result);
+        //     return { data: [], salesAmount: [] };
+        // }
     } catch (error) {
         console.error(error)
         return { data: [], salesAmount: [] };
@@ -73,20 +67,16 @@ const Dashboard = () => {
         const fetchData = async () => {
             try {
                 const response = await getData();
-                if (response) {
-                    setData(response.data)
-                    setSalesAmountContext(response.salesAmount)
-                    setLoading(false)
-                } else {
-                    return
-                }
+                setData(response.data);
+                // setSalesAmountContext(response.salesAmount); // Set salesAmount context if needed
             } catch (error) {
-                console.log("Error", error)
+                console.log("Error", error);
+            } finally {
+                setLoading(false);
             }
         }
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        fetchData()
-    }, []);
+        fetchData();
+    }, [setSalesAmountContext]);
 
     return (
         <>

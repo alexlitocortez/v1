@@ -3,7 +3,6 @@ import { PrismaClient } from '@prisma/client';
 import { Payment } from '~/app/dashboard/data';
 import puppeteer, { Page } from 'puppeteer';
 import { any, array, string } from 'zod';
-// import chromium from 'chrome-aws-lambda';
 
 const prisma = new PrismaClient();
 
@@ -14,108 +13,122 @@ interface ProjectData {
     project_link: string;
 }
 
-interface Site {
-    url: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // scrape: (page: Page) => Promise<ProjectData[]>;
-}
+// interface Site {
+//     url: string;
+// }
 
-async function scrapePage() {
-    // make array for selectors
-    const sites = [
-        {
-            url: 'https://www.sideprojectors.com/#/',
-            selectors: { titles: '.name', descriptions: '.pitch', saleAmounts: '.bg-blue-500.inline-block.py-1.px-4.font-semibold.rounded', projectLinks: 'a.project-item.w-full' } //25 results
-        },
-        {
-            url: 'https://indiemaker.co/',
-            selectors: { titles: '.details.pad-2 > h2', descriptions: '.details.pad-2 > p', saleAmounts: '.primary-text.bold', projectLinks: 'a.listing-card' }
-        },
-        {
-            url: 'https://www.microns.io/',
-            selectors: { titles: '.h5-heading.listings', descriptions: '.body-text.s-light.opacity-70', saleAmounts: '.listing-card-infoblock > h5', projectLinks: 'a.listing-card-link.w-inline-block' }
-        },
-        {
-            url: 'https://nicheinvestor.com/search/?sort=newest&es=1&address=&min_price=&max_price=&es_category=45&es_status[0]=120&sort-1=newest&paged-1=1',
-            selectors: { titles: '.es-listing__title', descriptions: '.es-excerpt.es-listing--hide-on-grid', saleAmounts: '.es-price', projectLinks: '.es-listing__title > a' }
-        },
-    ]
 
-    const browser = await puppeteer.launch()
-    const page = await browser.newPage();
-    let saleAmountsData: string[] = []
-    const allData: ProjectData[] = []; // Array to hold data from all sites
 
-    for (const site of sites) {
-        const { url, selectors } = site;
+// async function scrapePage() {
+//     // make array for selectors
+//     const sites = [
+//         {
+//             url: 'https://www.sideprojectors.com/#/',
+//             selectors: { titles: '.name', descriptions: '.pitch', saleAmounts: '.bg-blue-500.inline-block.py-1.px-4.font-semibold.rounded', projectLinks: 'a.project-item.w-full' } //25 results
+//         },
+//         {
+//             url: 'https://indiemaker.co/',
+//             selectors: { titles: '.details.pad-2 > h2', descriptions: '.details.pad-2 > p', saleAmounts: '.primary-text.bold', projectLinks: 'a.listing-card' }
+//         },
+//         {
+//             url: 'https://www.microns.io/',
+//             selectors: { titles: '.h5-heading.listings', descriptions: '.body-text.s-light.opacity-70', saleAmounts: '.listing-card-infoblock > h5', projectLinks: 'a.listing-card-link.w-inline-block' }
+//         },
+//         {
+//             url: 'https://nicheinvestor.com/search/?sort=newest&es=1&address=&min_price=&max_price=&es_category=45&es_status[0]=120&sort-1=newest&paged-1=1',
+//             selectors: { titles: '.es-listing__title', descriptions: '.es-excerpt.es-listing--hide-on-grid', saleAmounts: '.es-price', projectLinks: '.es-listing__title > a' }
+//         },
+//     ]
 
-        await page.goto(url);
+//     const browser = await puppeteer.launch()
+//     const page = await browser.newPage();
+//     let saleAmountsData: string[] = []
+//     const allData: ProjectData[] = []; // Array to hold data from all sites
 
-        const { titles, descriptions, saleAmounts, projectLinks } = selectors
+//     for (const site of sites) {
+//         const { url, selectors } = site;
 
-        const titlesData = await page.$$eval(titles, elements =>
-            elements.map(e => e.textContent?.replace(/\n/g, '').trim())
-        );
+//         await page.goto(url);
 
-        const descriptionsData = await page.$$eval(descriptions, elements =>
-            elements.map(e => e.textContent?.replace(/\n/g, '').trim())
-        );
+//         const { titles, descriptions, saleAmounts, projectLinks } = selectors
 
-        if (url === "https://www.microns.io/") {
-            saleAmountsData = await page.$$eval(saleAmounts, elements => {
-                return elements
-                    .filter(e => e.textContent?.includes('$'))
-                    .map(e => e.textContent?.replace(/\n/g, '').trim() ?? '')
-            }
-            );
-        } else {
-            saleAmountsData = await page.$$eval(saleAmounts, elements =>
-                elements.map(e => e.textContent?.replace(/\n/g, '').trim() ?? '')
-            );
-        }
+//         const titlesData = await page.$$eval(titles, elements =>
+//             elements.map(e => e.textContent?.replace(/\n/g, '').trim())
+//         );
 
-        const projectLinksData = await page.$$eval(projectLinks, anchors =>
-            anchors.map(anchor => {
-                if (anchor instanceof HTMLAnchorElement) {
-                    return anchor.href
-                }
-                return null;
-            }).filter(href => href !== null)
-        );
+//         const descriptionsData = await page.$$eval(descriptions, elements =>
+//             elements.map(e => e.textContent?.replace(/\n/g, '').trim())
+//         );
 
-        const data = titlesData.map((title, index) => ({
-            title: title ?? '',
-            description: descriptionsData[index] ?? '',
-            sale_amount: saleAmountsData[index] ?? '',
-            project_link: projectLinksData[index] ?? ''
-        }))
+//         if (url === "https://www.microns.io/") {
+//             saleAmountsData = await page.$$eval(saleAmounts, elements => {
+//                 return elements
+//                     .filter(e => e.textContent?.includes('$'))
+//                     .map(e => e.textContent?.replace(/\n/g, '').trim() ?? '')
+//             }
+//             );
+//         } else {
+//             saleAmountsData = await page.$$eval(saleAmounts, elements =>
+//                 elements.map(e => e.textContent?.replace(/\n/g, '').trim() ?? '')
+//             );
+//         }
 
-        allData.push(...data)
+//         const projectLinksData = await page.$$eval(projectLinks, anchors =>
+//             anchors.map(anchor => {
+//                 if (anchor instanceof HTMLAnchorElement) {
+//                     return anchor.href
+//                 }
+//                 return null;
+//             }).filter(href => href !== null)
+//         );
 
-    }
-    return allData
-}
+//         const data = titlesData.map((title, index) => ({
+//             title: title ?? '',
+//             description: descriptionsData[index] ?? '',
+//             sale_amount: saleAmountsData[index] ?? '',
+//             project_link: projectLinksData[index] ?? ''
+//         }))
 
-export async function POST(req: Request) {
+//         allData.push(...data)
+
+//     }
+//     return allData
+// }
+
+// export async function POST(req: Request) {
+//     try {
+//         // const data = await scrapePage();
+//         const dataToInsert = hardcodedData.map(item => ({
+//             title: item.title,
+//             description: item.description,
+//             sale_amount: item.sale_amount,
+//             project_link: item.project_link
+//         }));
+
+//         const createdProjects = await prisma.data.createMany({
+//             data: dataToInsert
+//         })
+
+//         console.log("createdProjects", createdProjects)
+
+//         return NextResponse.json({ success: true, data: createdProjects });
+//     } catch (error) {
+//         console.error('Error scraping and storing data:', error);
+//         return NextResponse.json({ success: false });
+//     } finally {
+//         await prisma.$disconnect();
+//     }
+// }
+
+export async function GET() {
     try {
-        const data = await scrapePage();
+        const findData = await prisma.data.findMany();
 
-        // const createdProjects = await prisma.data.createMany({
-        //     data: data
-        // })
-
-        return NextResponse.json({ success: true, data: data });
+        return Response.json({ data: findData })
     } catch (error) {
-        console.error('Error scraping and storing data:', error);
-        return NextResponse.json({ success: false });
-    } finally {
-        await prisma.$disconnect();
+        return Response.json({ error: 'Failed to fetch users' })
     }
 }
-
-
-
-
 
 
 // async function extractNumber(string: string) {
