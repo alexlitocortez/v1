@@ -24,20 +24,20 @@ async function getData(): Promise<ApiResponse> {
 
         console.log("response from server", (result as ApiResponse).data)
 
-        // if (result && typeof result === 'object' && 'data' in result && Array.isArray((result as ApiResponse).data)) {
-        const data: Payment[] = (result as ApiResponse).data.map((item, index) => ({
-            id: item.id ?? index.toString(),
-            title: item.title,
-            description: item.description,
-            sale_amount: item.sale_amount,
-            project_link: item.project_link
-        }));
+        if (result && typeof result === 'object' && 'data' in result && Array.isArray((result as ApiResponse).data)) {
+            const data: Payment[] = (result as ApiResponse).data.map((item, index) => ({
+                id: item.id ?? index.toString(),
+                title: item.title,
+                description: item.description,
+                sale_amount: item.sale_amount,
+                project_link: item.project_link
+            }));
 
-        return { data, salesAmount: (result as ApiResponse).salesAmount };
-        // } else {
-        //     console.error('Invalid response format:', result);
-        //     return { data: [], salesAmount: [] };
-        // }
+            return { data, salesAmount: (result as ApiResponse).salesAmount };
+        } else {
+            console.error('Invalid response format:', result);
+            return { data: [], salesAmount: [] };
+        }
     } catch (error) {
         console.error(error)
         return { data: [], salesAmount: [] };
