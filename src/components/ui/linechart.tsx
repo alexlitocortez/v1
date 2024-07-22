@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
 import { useAppContext } from '~/context';
+import { number } from 'zod';
 
 Chart.register(...registerables);
 
@@ -19,6 +20,7 @@ interface ChartData {
     datasets: dataprops[]
 }
 
+
 const LineChart = () => {
     const [chartData, setChartData] = useState<ChartData>({
         labels: [],
@@ -31,10 +33,18 @@ const LineChart = () => {
     const replaceValues = values.map((item) => item.replace(/[^0-9]/g, ''))
     const newValues = replaceValues.map((item) => parseInt(item))
 
+    console.log("newValues", newValues)
+
+    const calculateAverage = (values: number[]) => {
+        const total = values.reduce((acc, curr) => acc + curr, 0);
+        return total / values.length;
+    };
+
+    const averageValue = calculateAverage(newValues);
+
+    console.log("average value", averageValue)
+
     const projectTitles = nameContext.map((item) => item.title)
-
-
-    console.log("values", newValues)
 
     useEffect(() => {
         const fetchData = () => {
@@ -51,7 +61,7 @@ const LineChart = () => {
                 ],
             })
         }
-        fetchData()
+        fetchData();
     }, [])
 
     const options = {
@@ -71,7 +81,7 @@ const LineChart = () => {
             y: {
                 beginAtZero: true,
                 min: 500, // Set the minimum value for the Y-axis
-                max: 10000, // Set the maximum value for the Y-axis
+                max: 100000, // Set the maximum value for the Y-axis
                 ticks: {
                     stepSize: 500, // Set the step size between ticks
                     color: 'white'
@@ -85,6 +95,9 @@ const LineChart = () => {
         <div className='flex flex-col text-center mt-4'>
             <h1 className='mb-4 font-bold'>Project Prices</h1>
             <Line data={chartData} options={options} />
+            <div>
+                <h2>Average Value: ${averageValue.toLocaleString()}</h2>
+            </div>
         </div>
     );
 }

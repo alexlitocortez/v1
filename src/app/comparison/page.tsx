@@ -16,6 +16,8 @@ const Comparison = () => {
     const { nameContext } = useAppContext();
     const { salesAmountContext } = useAppContext();
 
+    console.log("salesAmountContext", salesAmountContext)
+
     const getAverage = () => {
         if (salesAmountContext.length === 0) {
             return '';
@@ -45,7 +47,6 @@ const Comparison = () => {
                 <div>
                     <LineChart />
                 </div>
-                <h1 className="font-bold">Average Price of Side Hustle: ${getAverage()}</h1>
             </MaxWidthWrapper>
         </>
     )
